@@ -1,0 +1,215 @@
+/* ===============================
+   Layout Principal
+=============================== */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: url('./assets/salon-bg.png') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Oscurecer el fondo para que resalten los componentes de cristal */
+.app-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(5,5,10,0.9) 0%, rgba(20,0,40,0.85) 100%);
+  z-index: 0;
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  padding-top: 100px; /* Espacio para el navbar */
+}
+
+/* ===============================
+   Navbar Glassmorphism
+=============================== */
+.navbar {
+  position: fixed;
+  top: 0; width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5%;
+  background: var(--color-dark-glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: var(--glass-border);
+  z-index: 100;
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-neon-fuchsia);
+  text-shadow: var(--glow-fuchsia);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-item {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 500;
+  background: transparent;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: var(--transition-smooth);
+}
+
+.nav-item:hover, .nav-item.active {
+  color: var(--color-neon-cyan);
+  background: rgba(0, 243, 255, 0.1);
+  box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.2);
+}
+
+/* ===============================
+   Contenedores Glassmorphism
+=============================== */
+.glass-panel {
+  background: rgba(20, 15, 25, 0.6);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 0, 127, 0.3);
+  border-radius: 24px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255, 0, 127, 0.1);
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.glass-panel h2 {
+  color: var(--color-neon-magenta);
+  text-shadow: var(--glow-magenta);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.glass-panel p {
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* ===============================
+   Formularios y Botones
+=============================== */
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  color: var(--color-neon-cyan);
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: var(--color-text);
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+}
+
+.form-input:focus {
+  border-color: var(--color-neon-cyan);
+  box-shadow: var(--glow-cyan);
+  outline: none;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  color: var(--color-neon-orange);
+  border: 2px solid var(--color-neon-orange);
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  margin-top: 1rem;
+  transition: var(--transition-smooth);
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.2), inset 0 0 10px rgba(255, 102, 0, 0.1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  background: var(--color-neon-orange);
+  color: var(--color-dark);
+  box-shadow: var(--glow-orange);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--color-neon-fuchsia);
+  color: var(--color-neon-fuchsia);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 0, 127, 0.1);
+  box-shadow: var(--glow-fuchsia);
+}
+
+/* ===============================
+   Tarjetas de Servicios
+=============================== */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.service-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.service-card:hover {
+  background: rgba(157, 0, 255, 0.1);
+  border-color: var(--color-neon-purple);
+  box-shadow: var(--glow-purple);
+  transform: translateY(-5px);
+}
+
+.service-price {
+  color: var(--color-neon-lime);
+  text-shadow: 0 0 5px var(--color-neon-lime), 0 0 10px var(--color-neon-lime);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
