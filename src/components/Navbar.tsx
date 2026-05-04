@@ -23,9 +23,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, isAuthe
         <button type="button" className={`nav-item ${currentView === 'booking' ? 'active' : ''}`} onClick={() => onNavigate('booking')}>
           Turnos
         </button>
-        <button type="button" className={`nav-item ${currentView === 'tasks' ? 'active' : ''}`} onClick={() => onNavigate('tasks')}>
-          Tratamientos
-        </button>
+
         <button type="button" className={`nav-item ${currentView === 'help' ? 'active' : ''}`} onClick={() => onNavigate('help')}>
           Ayuda
         </button>
