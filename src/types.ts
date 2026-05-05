@@ -4,24 +4,24 @@
 
 // 1. Tipos de Servicios Disponibles
 export type ServiceId = 1 | 2 | 3 | 4;
-export type ServiceCategory = 'Corte' | 'Coloración' | 'Tratamiento' | 'Estilismo';
 
-export interface SalonService {
+export interface GarajeService {
   id: ServiceId;
   name: string;
-  category: ServiceCategory;
   price: number;
   durationMinutes: number;
 }
 
+export const availableServices: GarajeService[] = [
+  { id: 1, name: 'Tratamiento Facial', price: 50, durationMinutes: 45 },
+  { id: 2, name: 'Masaje Relax', price: 40, durationMinutes: 60 },
+  { id: 3, name: 'Manicura', price: 20, durationMinutes: 30 },
+  { id: 4, name: 'Pedicura', price: 25, durationMinutes: 40 },
+];
+
 // 2. Arrays Tipados (Inmutables)
 // Uso de ReadonlyArray para evitar mutaciones accidentales en tiempo de ejecución
-export const availableServices: ReadonlyArray<SalonService> = [
-  { id: 1, name: 'Corte Clásico Premium', category: 'Corte', price: 25, durationMinutes: 45 },
-  { id: 2, name: 'Decoloración y Tinte 2026', category: 'Coloración', price: 85, durationMinutes: 120 },
-  { id: 3, name: 'Tratamiento Keratina Cristal', category: 'Tratamiento', price: 120, durationMinutes: 90 },
-  { id: 4, name: 'Peinado de Gala', category: 'Estilismo', price: 40, durationMinutes: 60 }
-];
+
 
 // 3. Tuplas de Seguridad
 // Garantizan el orden exacto de los elementos de una transacción en memoria

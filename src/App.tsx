@@ -10,9 +10,11 @@ import { BookingForm } from './components/BookingForm';
 import { Payment } from './components/Payment';
 import { Help } from './components/Help';
 import { TaskManager } from './components/TaskManager';
+import { RequireAuth } from './components/RequireAuth';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Perfil } from './pages/Perfil';
+import { PerfilUsuario } from './pages/PerfilUsuario';
 import { Configuracion } from './pages/Configuracion';
 import { Notificaciones } from './pages/Notificaciones';
 
@@ -36,13 +38,20 @@ function App() {
     activePayment: null,
     accountStatus: 'activa',
   });
+  /*
+    Cambio realizado: adaptamos el estado actual a la forma que espera RequireAuth.
+    Por que: el guard de rutas necesita un usuario null/no-null, sin acoplarse a todo AppState.
+  */
+  const authUser = appState.isAuthenticated && appState.currentUser
+    ? { email: appState.currentUser, uid: appState.currentUser }
+    : null;
 
   const navigateTo = (view: ViewState) => {
     setAppState(prev => ({ ...prev, currentView: view }));
     navigate(viewRoutes[view]);
   };
 
-  const handleLogin = (username: string, status?: string) => {
+  const handleLogin = (username: string, status?: string, redirectTo?: string) => {
     setAppState(prev => ({ 
       ...prev, 
       isAuthenticated: true, 
@@ -50,7 +59,7 @@ function App() {
       accountStatus: status || 'activa',
       currentView: 'home' 
     }));
-    navigate(viewRoutes.home);
+    navigate(redirectTo || viewRoutes.home, { replace: Boolean(redirectTo) });
   };
 
   const handleLogout = () => {
@@ -113,8 +122,21 @@ function App() {
         <Route path="turnos" element={<BookingForm onBook={handleBooking} />} />
         <Route path="pago" element={<Payment activeBooking={appState.activeBooking} onPaymentComplete={handlePayment} />} />
         <Route path="ayuda" element={<Help />} />
-        <Route path="tratamientos" element={<TaskManager />} />
-        <Route path="dashboard" element={<DashboardLayout />}>
+        <Route path="tratamientos" element={<TaskManager userId={appState.currentUser} />} />
+        <Route
+          path="perfil/:userId"
+          element={
+            <RequireAuth user={authUser}>
+              <PerfilUsuario />
+            </RequireAuth>
+          }
+        />
+        <Route path="dashboard" element={
+          <DashboardLayout 
+            accountStatus={appState.accountStatus || 'activa'} 
+            onUpdateAccountStatus={(status) => setAppState(prev => ({ ...prev, accountStatus: status }))} 
+          />
+        }>
           <Route index element={<Navigate to="perfil" replace />} />
           <Route
             path="perfil"
