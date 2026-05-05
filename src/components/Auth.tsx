@@ -15,7 +15,7 @@ interface AuthProps {
   onNavigate: (view: ViewState) => void;
 }
 
-async function mockSaveAuth(data: unknown) {
+async function mockSaveAuth(_data: unknown) {
   await new Promise((r) => setTimeout(r, 800));
   if (Math.random() < 0.3) throw new Error("Error de conexión. Intenta de nuevo.");
   return { ok: true };
@@ -23,7 +23,7 @@ async function mockSaveAuth(data: unknown) {
 
 export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) => {
   const [form, setForm] = useState<LoginFormState>(initialLoginForm);
-  const [errors, setErrors] = useState<Partial<Record<keyof LoginFormState, string>>>({});
+  const [errors, setErrors] = useState<FieldErrors<LoginFormState>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -93,7 +93,7 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
     e.preventDefault();
     
     // Validar
-    const newErrors: Partial<Record<keyof LoginFormState, string>> = {};
+    const newErrors: FieldErrors<LoginFormState> = {};
     if (!form.email || form.email.length < 3) {
       newErrors.email = "El email debe tener al menos 3 caracteres.";
     }

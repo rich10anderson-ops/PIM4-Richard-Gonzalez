@@ -67,8 +67,10 @@
   font-size: 1rem;
   font-weight: 500;
   background: transparent;
+  border: 0;
   padding: 0.5rem 1rem;
   border-radius: 8px;
+  text-decoration: none;
   transition: var(--transition-smooth);
 }
 
@@ -212,4 +214,81 @@
   font-size: 1.5rem;
   font-weight: 700;
   margin-top: 0.5rem;
+}
+
+/* ===============================
+   Dashboard y rutas anidadas
+=============================== */
+.dashboard-layout {
+  max-width: 920px;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.dashboard-nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-nav a {
+  display: block;
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(0, 243, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  transition: var(--transition-smooth);
+}
+
+.dashboard-nav a:hover {
+  color: var(--color-neon-cyan);
+  border-color: var(--color-neon-cyan);
+  box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.16);
+}
+
+.dashboard-content {
+  min-width: 0;
+}
+
+.dashboard-page h2 {
+  margin-bottom: 1rem;
+}
+
+.dashboard-details {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 0.75rem 1rem;
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.dashboard-details span {
+  color: var(--color-text-muted);
+}
+
+.notification-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-left: 1.25rem;
+  color: var(--color-text-muted);
+  text-align: left;
+}
+
+@media (max-width: 760px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-nav ul {
+    flex-direction: row;
+    overflow-x: auto;
+  }
 }

@@ -1,15 +1,33 @@
 import { useState } from 'react';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import type { ViewState, AppState, SecureBookingTuple, SecurePaymentTuple } from './types';
-import { Navbar } from './components/Navbar';
+import { AppLayout } from './layouts/AppLayout';
+import { DashboardLayout } from './layouts/DashboardLayout';
 import { Home } from './components/Home';
 import { Auth } from './components/Auth';
 import { BookingForm } from './components/BookingForm';
 import { Payment } from './components/Payment';
 import { Help } from './components/Help';
 import { TaskManager } from './components/TaskManager';
+import { About } from './pages/About';
+import { Contact } from './pages/Contact';
+import { Perfil } from './pages/Perfil';
+import { Configuracion } from './pages/Configuracion';
+import { Notificaciones } from './pages/Notificaciones';
+
+const viewRoutes: Record<ViewState, string> = {
+  home: '/',
+  login: '/login',
+  register: '/registro',
+  booking: '/turnos',
+  payment: '/pago',
+  help: '/ayuda',
+  tasks: '/dashboard/perfil',
+};
 
 function App() {
+  const navigate = useNavigate();
   const [appState, setAppState] = useState<AppState & { accountStatus?: string }>({
     currentView: 'home',
     isAuthenticated: false,
@@ -21,6 +39,7 @@ function App() {
 
   const navigateTo = (view: ViewState) => {
     setAppState(prev => ({ ...prev, currentView: view }));
+    navigate(viewRoutes[view]);
   };
 
   const handleLogin = (username: string, status?: string) => {
@@ -31,6 +50,7 @@ function App() {
       accountStatus: status || 'activa',
       currentView: 'home' 
     }));
+    navigate(viewRoutes.home);
   };
 
   const handleLogout = () => {
@@ -42,6 +62,7 @@ function App() {
       activeBooking: null, // Opcionalmente limpar reservas al salir
       activePayment: null
     }));
+    navigate(viewRoutes.home);
   };
 
   const handleBooking = (booking: SecureBookingTuple) => {
@@ -50,6 +71,7 @@ function App() {
       activeBooking: booking,
       currentView: 'payment' // Redirigir a pago inmediatamente o seguir en turnos
     }));
+    navigate(viewRoutes.payment);
   };
 
   const handlePayment = (payment: SecurePaymentTuple) => {
@@ -61,49 +83,49 @@ function App() {
     }));
   };
 
-  const renderView = () => {
-    switch (appState.currentView) {
-      case 'home':
-        return <Home 
-                 onNavigate={navigateTo} 
-                 isAuthenticated={appState.isAuthenticated} 
-                 currentUser={appState.currentUser} 
-                 accountStatus={appState.accountStatus} 
-               />;
-      case 'login':
-        return <Auth mode="login" onAuthSuccess={handleLogin} onNavigate={navigateTo} />;
-      case 'register':
-        return <Auth mode="register" onAuthSuccess={handleLogin} onNavigate={navigateTo} />;
-      case 'booking':
-        return <BookingForm onBook={handleBooking} />;
-      case 'payment':
-        return <Payment activeBooking={appState.activeBooking} onPaymentComplete={handlePayment} />;
-      case 'help':
-        return <Help />;
-      case 'tasks':
-        return <TaskManager />;
-      default:
-        return <Home 
-                 onNavigate={navigateTo} 
-                 isAuthenticated={appState.isAuthenticated} 
-                 currentUser={appState.currentUser} 
-                 accountStatus={appState.accountStatus} 
-               />;
-    }
-  };
-
   return (
-    <div className="app-container">
-      <Navbar 
-        currentView={appState.currentView} 
-        onNavigate={navigateTo} 
-        isAuthenticated={appState.isAuthenticated}
-        onLogout={handleLogout}
-      />
-      <div className="content-wrapper">
-        {renderView()}
-      </div>
-    </div>
+    <Routes>
+      <Route
+        element={
+          <AppLayout
+            currentView={appState.currentView}
+            onNavigate={navigateTo}
+            isAuthenticated={appState.isAuthenticated}
+            onLogout={handleLogout}
+          />
+        }
+      >
+        <Route
+          index
+          element={
+            <Home
+              onNavigate={navigateTo}
+              isAuthenticated={appState.isAuthenticated}
+              currentUser={appState.currentUser}
+              accountStatus={appState.accountStatus}
+            />
+          }
+        />
+        <Route path="about" element={<About />} />
+        <Route path="contact" element={<Contact />} />
+        <Route path="login" element={<Auth mode="login" onAuthSuccess={handleLogin} onNavigate={navigateTo} />} />
+        <Route path="registro" element={<Auth mode="register" onAuthSuccess={handleLogin} onNavigate={navigateTo} />} />
+        <Route path="turnos" element={<BookingForm onBook={handleBooking} />} />
+        <Route path="pago" element={<Payment activeBooking={appState.activeBooking} onPaymentComplete={handlePayment} />} />
+        <Route path="ayuda" element={<Help />} />
+        <Route path="tratamientos" element={<TaskManager />} />
+        <Route path="dashboard" element={<DashboardLayout />}>
+          <Route index element={<Navigate to="perfil" replace />} />
+          <Route
+            path="perfil"
+            element={<Perfil currentUser={appState.currentUser} accountStatus={appState.accountStatus} />}
+          />
+          <Route path="config" element={<Configuracion />} />
+          <Route path="notificaciones" element={<Notificaciones />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
   );
 }
 

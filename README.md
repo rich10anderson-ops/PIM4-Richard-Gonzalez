@@ -2,7 +2,7 @@
 
 ![L'ESTHÉTIQUE Banner](./src/assets/salon-bg.png)
 
-Una plataforma web premium para la gestión y reserva de servicios de peluquería moderna. Esta aplicación fue diseñada para el futuro (2026) combinando una interfaz de *glassmorphism* de lujo con una arquitectura altamente segura en TypeScript.
+Una plataforma web premium para la gestión y reserva de servicios de peluquería moderna. Esta aplicación fue diseñada para el futuro (2030) combinando una interfaz de *glassmorphism* de lujo con una arquitectura altamente segura en TypeScript.
 
 ## 🌟 Características Principales
 
@@ -54,6 +54,51 @@ src/
 ├── index.css       # Variables globales y reset CSS
 └── types.ts        # Declaraciones de tipos estrictos y tuplas
 ```
+
+## Enrutamiento con React Router
+
+El proyecto usa `BrowserRouter` desde `src/main.tsx` para habilitar navegacion por URL en la aplicacion Vite.
+
+Las rutas principales se declaran en `src/App.tsx` con `Routes` y `Route`:
+
+```tsx
+<Routes>
+  <Route element={<AppLayout />}>
+    <Route index element={<Home />} />
+    <Route path="about" element={<About />} />
+    <Route path="contact" element={<Contact />} />
+    <Route path="turnos" element={<BookingForm />} />
+    <Route path="pago" element={<Payment />} />
+    <Route path="ayuda" element={<Help />} />
+  </Route>
+</Routes>
+```
+
+Tambien se agrego un layout principal en `src/layouts/AppLayout.tsx`, encargado de mantener visible la `Navbar` y renderizar cada pagina con `Outlet`.
+
+### Rutas anidadas del Dashboard
+
+El dashboard usa un layout padre en `src/layouts/DashboardLayout.tsx`. La ruta padre define el menu permanente y las rutas hijas renderizan su contenido dentro del `Outlet`.
+
+```tsx
+<Route path="dashboard" element={<DashboardLayout />}>
+  <Route path="perfil" element={<Perfil />} />
+  <Route path="config" element={<Configuracion />} />
+  <Route path="notificaciones" element={<Notificaciones />} />
+</Route>
+```
+
+Rutas disponibles:
+
+* `/` - Inicio
+* `/about` - Nosotros
+* `/contact` - Contacto
+* `/turnos` - Reservas
+* `/pago` - Pago de servicio
+* `/ayuda` - Centro de ayuda
+* `/dashboard/perfil` - Perfil
+* `/dashboard/config` - Configuracion
+* `/dashboard/notificaciones` - Notificaciones
 
 ## 🚀 Instalación y Desarrollo
 

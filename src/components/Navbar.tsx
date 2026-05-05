@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import type { ViewState } from '../types';
 
 interface NavbarProps {
@@ -8,53 +9,47 @@ interface NavbarProps {
   onLogout: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, isAuthenticated, onLogout }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onNavigate, isAuthenticated, onLogout }) => {
   return (
     <nav className="navbar">
       <div className="nav-brand">L'ESTHÉTIQUE 2026</div>
       <div className="nav-links">
-        <button 
-          type="button"
-          className={`nav-item ${currentView === 'home' ? 'active' : ''}`}
-          onClick={() => onNavigate('home')}
-        >
+        <NavLink className="nav-item" to="/" onClick={() => onNavigate('home')}>
           Inicio
-        </button>
-        <button type="button" className={`nav-item ${currentView === 'booking' ? 'active' : ''}`} onClick={() => onNavigate('booking')}>
+        </NavLink>
+        <NavLink className="nav-item" to="/about">
+          Nosotros
+        </NavLink>
+        <NavLink className="nav-item" to="/turnos" onClick={() => onNavigate('booking')}>
           Turnos
-        </button>
-
-        <button type="button" className={`nav-item ${currentView === 'help' ? 'active' : ''}`} onClick={() => onNavigate('help')}>
+        </NavLink>
+        <NavLink className="nav-item" to="/contact">
+          Contacto
+        </NavLink>
+        <NavLink className="nav-item" to="/ayuda" onClick={() => onNavigate('help')}>
           Ayuda
-        </button>
-        
+        </NavLink>
+
         {isAuthenticated ? (
           <>
-            <button 
-              type="button"
-              className={`nav-item ${currentView === 'payment' ? 'active' : ''}`}
-              onClick={() => onNavigate('payment')}
-            >
+            <NavLink className="nav-item" to="/pago" onClick={() => onNavigate('payment')}>
               Pagar Servicio
+            </NavLink>
+            <NavLink className="nav-item" to="/dashboard/perfil" onClick={() => onNavigate('tasks')}>
+              Dashboard
+            </NavLink>
+            <button type="button" className="nav-item" onClick={onLogout}>
+              Cerrar Sesión
             </button>
-            <button type="button" className="nav-item" onClick={onLogout}>Cerrar Sesión</button>
           </>
         ) : (
           <>
-            <button 
-              type="button"
-              className={`nav-item ${currentView === 'login' ? 'active' : ''}`}
-              onClick={() => onNavigate('login')}
-            >
+            <NavLink className="nav-item" to="/login" onClick={() => onNavigate('login')}>
               Ingresar
-            </button>
-            <button 
-              type="button"
-              className={`nav-item ${currentView === 'register' ? 'active' : ''}`}
-              onClick={() => onNavigate('register')}
-            >
+            </NavLink>
+            <NavLink className="nav-item" to="/registro" onClick={() => onNavigate('register')}>
               Registrarse
-            </button>
+            </NavLink>
           </>
         )}
       </div>
