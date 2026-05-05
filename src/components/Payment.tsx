@@ -36,7 +36,7 @@ export const Payment: React.FC<PaymentProps> = ({ activeBooking, onPaymentComple
       setTimeout(() => {
         onPaymentComplete(paymentRecord);
       }, 1500);
-    } catch (err) {
+    } catch {
       setSubmitError("Error al procesar el pago. Intente nuevamente.");
     } finally {
       setIsSubmitting(false);

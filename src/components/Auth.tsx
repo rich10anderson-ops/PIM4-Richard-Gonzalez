@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { ChangeEvent } from 'react';
+import { useLocation } from 'react-router-dom';
 import type { ViewState, FieldErrors } from '../types';
 
 type LoginFormState = {
@@ -11,8 +12,12 @@ const initialLoginForm: LoginFormState = { email: "", password: "" };
 
 interface AuthProps {
   mode: 'login' | 'register';
-  onAuthSuccess: (username: string, status?: string) => void;
+  onAuthSuccess: (username: string, status?: string, redirectTo?: string) => void;
   onNavigate: (view: ViewState) => void;
+}
+
+interface LocationState {
+  from?: { pathname: string };
 }
 
 async function mockSaveAuth(_data: unknown) {
@@ -22,39 +27,35 @@ async function mockSaveAuth(_data: unknown) {
 }
 
 export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) => {
+  const location = useLocation();
+  const state = location.state as LocationState | null;
   const [form, setForm] = useState<LoginFormState>(initialLoginForm);
   const [errors, setErrors] = useState<FieldErrors<LoginFormState>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [accountStatus, setAccountStatus] = useState('activa');
+  const [accountStatus] = useState('activa');
 
   // --- APLICACIÓN DE PATRONES DE ESTADO AVANZADOS (Arrays y Objetos) ---
   
-  // 1. Manejo de Arrays (Intereses / Items)
   const [items, setItems] = useState<string[]>(['Tratamiento Facial', 'Masaje Relax']);
 
   const addItem = (newItem: string) => {
-    // Al final
     setItems(prev => [...prev, newItem]);
   };
 
   const addItemAtStart = (newItem: string) => {
-    // Al inicio
     setItems(prev => [newItem, ...prev]);
   };
 
   const removeItemByIndex = (index: number) => {
-    // Por índice
     setItems(prev => prev.filter((_, i) => i !== index));
   };
 
   const sortItems = () => {
-    // Crear copia antes de sort
     setItems(prev => [...prev].sort((a, b) => a.localeCompare(b)));
   };
 
-  // 2. Manejo de Objetos Anidados y Propiedades (Perfil de Usuario)
   const [userProfile, setUserProfile] = useState({
     name: 'Ana',
     age: 28,
@@ -62,12 +63,10 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
   });
 
   const updateAge = (newAge: number) => {
-    // Actualizar una propiedad
     setUserProfile(prev => ({ ...prev, age: newAge }));
   };
 
   const updateCity = (newCity: string) => {
-    // Actualizar propiedad anidada
     setUserProfile(prev => ({
       ...prev,
       address: {
@@ -81,13 +80,10 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    // Limpiar el error cuando el usuario empiece a corregirlo
     if (errors[name as keyof LoginFormState]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   }
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,8 +111,7 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
       await mockSaveAuth(form);
       setSubmitSuccess(true);
       
-      // Simulación de validación exitosa con delay para ver el éxito
-      setTimeout(() => onAuthSuccess(form.email, accountStatus), 1000);
+      setTimeout(() => onAuthSuccess(form.email, accountStatus, state?.from?.pathname), 1000);
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Error inesperado.");
     } finally {
@@ -129,7 +124,7 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
       <h2>{mode === 'login' ? 'Ingresar a tu Cuenta' : 'Registrarse como Nuevo Cliente'}</h2>
 
       <div style={{ marginBottom: '2rem', marginTop: '1.5rem', textAlign: 'center' }}>
-        <button type="button" className="btn-outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0.8rem', gap: '10px', borderRadius: '8px', border: '1px solid var(--color-gold)', color: 'var(--color-gold)' }} onClick={() => onAuthSuccess("Usuario Google", accountStatus)}>
+        <button type="button" className="btn-outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0.8rem', gap: '10px', borderRadius: '8px', border: '1px solid var(--color-gold)', color: 'var(--color-gold)' }} onClick={() => onAuthSuccess("Usuario Google", accountStatus, state?.from?.pathname)}>
           <svg width="20" height="20" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -138,6 +133,11 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
           </svg>
           Continuar con Google
         </button>
+        {mode === 'login' && state?.from && (
+          <p className="auth-redirect-message">
+            Necesitás iniciar sesión para acceder a {state.from.pathname}
+          </p>
+        )}
         <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', color: '#ccc' }}>
           <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
           <span style={{ padding: '0 10px', fontSize: '0.9rem' }}>o usa tu email</span>
@@ -222,20 +222,6 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
             </ul>
           </div>
         )}
-
-        <div className="form-group">
-          <label htmlFor="accountStatus">Estado de la cuenta (Simulación)</label>
-          <select 
-            id="accountStatus"
-            className="form-input"
-            value={accountStatus}
-            onChange={(e) => setAccountStatus(e.target.value)}
-          >
-            <option value="activa">Activa</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="premium">Premium</option>
-          </select>
-        </div>
 
         <div style={{ minHeight: '50px', marginTop: '1.5rem', textAlign: 'center' }}>
           {submitError && (

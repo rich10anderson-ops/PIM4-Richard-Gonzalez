@@ -14,29 +14,31 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, isAuthenticated, onL
     <nav className="navbar">
       <div className="nav-brand">L'ESTHÉTIQUE 2026</div>
       <div className="nav-links">
-        <NavLink className="nav-item" to="/" onClick={() => onNavigate('home')}>
-          Inicio
-        </NavLink>
-        <NavLink className="nav-item" to="/about">
-          Nosotros
-        </NavLink>
-        <NavLink className="nav-item" to="/turnos" onClick={() => onNavigate('booking')}>
-          Turnos
-        </NavLink>
-        <NavLink className="nav-item" to="/contact">
-          Contacto
-        </NavLink>
-        <NavLink className="nav-item" to="/ayuda" onClick={() => onNavigate('help')}>
-          Ayuda
-        </NavLink>
-
         {isAuthenticated ? (
           <>
+            <NavLink className="nav-item" to="/" onClick={() => onNavigate('home')}>
+              Inicio
+            </NavLink>
+            <NavLink className="nav-item" to="/about">
+              Nosotros
+            </NavLink>
+            <NavLink className="nav-item" to="/turnos" onClick={() => onNavigate('booking')}>
+              Turnos
+            </NavLink>
+            <NavLink className="nav-item" to="/contact">
+              Contacto
+            </NavLink>
+            <NavLink className="nav-item" to="/ayuda" onClick={() => onNavigate('help')}>
+              Ayuda
+            </NavLink>
             <NavLink className="nav-item" to="/pago" onClick={() => onNavigate('payment')}>
               Pagar Servicio
             </NavLink>
             <NavLink className="nav-item" to="/dashboard/perfil" onClick={() => onNavigate('tasks')}>
               Dashboard
+            </NavLink>
+            <NavLink className="nav-item" to="/perfil/demo-user">
+              Perfil URL
             </NavLink>
             <button type="button" className="nav-item" onClick={onLogout}>
               Cerrar Sesión
@@ -45,7 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, isAuthenticated, onL
         ) : (
           <>
             <NavLink className="nav-item" to="/login" onClick={() => onNavigate('login')}>
-              Ingresar
+              Login
             </NavLink>
             <NavLink className="nav-item" to="/registro" onClick={() => onNavigate('register')}>
               Registrarse

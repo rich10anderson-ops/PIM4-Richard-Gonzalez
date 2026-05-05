@@ -27,10 +27,10 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, isAuthenticated, current
           <button 
             type="button"
             className="btn-primary" 
-            onClick={() => onNavigate('booking')}
+            onClick={() => onNavigate(isAuthenticated ? 'booking' : 'login')}
             style={{ padding: '1rem 3rem', fontSize: '1.2rem', maxWidth: '300px' }}
           >
-            {isAuthenticated ? 'Reservar Nuevo Turno' : 'Reservar Ahora'}
+            {isAuthenticated ? 'Reservar Nuevo Turno' : 'Login'}
           </button>
         </div>
       </div>

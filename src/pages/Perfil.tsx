@@ -1,3 +1,5 @@
+import { MensajePostGuardado } from '../components/MensajePostGuardado';
+
 interface PerfilProps {
   currentUser: string | null;
   accountStatus?: string;
@@ -6,6 +8,7 @@ interface PerfilProps {
 export function Perfil({ currentUser, accountStatus }: PerfilProps) {
   return (
     <section className="dashboard-page">
+      <MensajePostGuardado />
       <h2>Perfil</h2>
       <p>Consulta la información principal de tu cuenta y el estado actual del servicio.</p>
       <div className="dashboard-details">
