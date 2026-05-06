@@ -12,8 +12,10 @@ interface ServerlessRequest {
 }
 
 interface ServerlessResponse {
+  setHeader(name: string, value: string): void;
   status(code: number): {
     json(payload: { ok: boolean; error?: string }): void;
+    end(): void;
   };
 }
 
@@ -34,6 +36,17 @@ const sesClient = new SESClient({
 });
 
 export default async function handler(req: ServerlessRequest, res: ServerlessResponse) {
+  // Configurar encabezados CORS
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Puedes cambiar '*' por el dominio exacto en producción
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+
+  // Responder a peticiones preflight (OPTIONS) sin procesar el envío de correo
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Método no permitido.' });
   }
@@ -56,7 +69,7 @@ export default async function handler(req: ServerlessRequest, res: ServerlessRes
         },
         Subject: { Data: subject },
       },
-      Source: process.env.AWS_SES_FROM_EMAIL || "admin@esthetique2026.com",
+      Source: process.env.AWS_SES_FROM_EMAIL || "[EMAIL_ADDRESS]",
     });
 
     await sesClient.send(command);

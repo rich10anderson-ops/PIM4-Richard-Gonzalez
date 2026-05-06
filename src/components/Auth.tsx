@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useLocation } from 'react-router-dom';
 import type { ViewState, FieldErrors } from '../types';
+import { auth } from '../firebase/config';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 type LoginFormState = {
   email: string;
@@ -85,6 +87,22 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
     }
   }
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setSubmitError(null);
+      setIsSubmitting(true);
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      onAuthSuccess(user.displayName || user.email || "Usuario Google", accountStatus, state?.from?.pathname);
+    } catch (error: any) {
+      console.error("Google Auth Error:", error);
+      setSubmitError(error.message || "Error al iniciar sesión con Google.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -124,7 +142,7 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
       <h2>{mode === 'login' ? 'Ingresar a tu Cuenta' : 'Registrarse como Nuevo Cliente'}</h2>
 
       <div style={{ marginBottom: '2rem', marginTop: '1.5rem', textAlign: 'center' }}>
-        <button type="button" className="btn-outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0.8rem', gap: '10px', borderRadius: '8px', border: '1px solid var(--color-gold)', color: 'var(--color-gold)' }} onClick={() => onAuthSuccess("Usuario Google", accountStatus, state?.from?.pathname)}>
+        <button type="button" className="btn-outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0.8rem', gap: '10px', borderRadius: '8px', border: '1px solid var(--color-gold)', color: 'var(--color-gold)' }} onClick={handleGoogleSignIn} disabled={isSubmitting}>
           <svg width="20" height="20" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>

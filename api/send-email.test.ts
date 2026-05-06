@@ -38,8 +38,10 @@ describe('send-email API', () => {
     it('returns 405 if method is not POST', async () => {
       const req: any = { method: 'GET' };
       const res: any = {
+        setHeader: vi.fn(),
         status: vi.fn().mockReturnThis(),
-        json: vi.fn()
+        json: vi.fn(),
+        end: vi.fn()
       };
       
       await handler(req, res);
@@ -51,14 +53,32 @@ describe('send-email API', () => {
     it('returns 400 if payload is invalid', async () => {
       const req: any = { method: 'POST', body: {} };
       const res: any = {
+        setHeader: vi.fn(),
         status: vi.fn().mockReturnThis(),
-        json: vi.fn()
+        json: vi.fn(),
+        end: vi.fn()
       };
       
       await handler(req, res);
       
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ ok: false }));
+    });
+
+    it('handles OPTIONS requests for CORS preflight', async () => {
+      const req: any = { method: 'OPTIONS' };
+      const res: any = {
+        setHeader: vi.fn(),
+        status: vi.fn().mockReturnThis(),
+        json: vi.fn(),
+        end: vi.fn()
+      };
+      
+      await handler(req, res);
+      
+      expect(res.setHeader).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.end).toHaveBeenCalled();
     });
   });
 });

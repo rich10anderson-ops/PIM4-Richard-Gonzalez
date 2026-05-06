@@ -10,7 +10,7 @@ describe('EmailSummaryButton', () => {
 
   beforeEach(() => {
     // Reset global fetch mock
-    global.fetch = vi.fn();
+    globalThis.fetch = vi.fn();
     vi.spyOn(window, 'alert').mockImplementation(() => {});
   });
 
@@ -24,11 +24,11 @@ describe('EmailSummaryButton', () => {
     const button = screen.getByRole('button', { name: /Enviar Resumen por Email/i });
     fireEvent.click(button);
     expect(window.alert).toHaveBeenCalledWith('No hay tareas para incluir en el resumen.');
-    expect(global.fetch).not.toHaveBeenCalled();
+    expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 
   it('calls fetch with correct parameters and shows success message', async () => {
-    (global.fetch as any).mockResolvedValueOnce({
+    (globalThis.fetch as any).mockResolvedValueOnce({
       json: async () => ({ ok: true })
     });
 
@@ -41,7 +41,7 @@ describe('EmailSummaryButton', () => {
     expect(button).toBeDisabled();
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('/api/send-email', expect.objectContaining({
+      expect(globalThis.fetch).toHaveBeenCalledWith('/api/send-email', expect.objectContaining({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: expect.stringContaining('test@test.com')
@@ -54,7 +54,7 @@ describe('EmailSummaryButton', () => {
   });
 
   it('shows error message when fetch fails', async () => {
-    (global.fetch as any).mockResolvedValueOnce({
+    (globalThis.fetch as any).mockResolvedValueOnce({
       json: async () => ({ ok: false, error: 'Invalid config' })
     });
 
