@@ -24,7 +24,7 @@ vi.mock('../firebase/config', () => ({
 describe('TaskManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (firestore.onSnapshot as any).mockImplementation((query: any, onNext: any) => {
+    (firestore.onSnapshot as any).mockImplementation((_query: any, onNext: any) => {
       onNext({
         forEach: (cb: any) => {
           cb({ id: '1', data: () => ({ userId: 'user1', title: 'Test Task', subtasks: [] }) });
