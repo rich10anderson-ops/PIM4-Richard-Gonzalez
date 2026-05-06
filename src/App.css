@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  background: url('./assets/salon-bg.png') no-repeat center center fixed;
+  background: url('./assets/street-colorful-bg.png') no-repeat center center fixed;
   background-size: cover;
 }
 
@@ -15,7 +15,7 @@
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(5,5,10,0.9) 0%, rgba(20,0,40,0.85) 100%);
+  background: linear-gradient(135deg, rgba(5,5,10,0.85) 0%, rgba(20,0,40,0.7) 100%);
   z-index: 0;
 }
 
@@ -50,13 +50,20 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem;
-  background: rgba(5, 5, 10, 0.8);
+  background: rgba(5, 5, 10, 0.7);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border-bottom: 1px solid rgba(0, 243, 255, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #ff007f, #00f3ff, #9d00ff, #39ff14, #ff007f) 1;
+  box-shadow: 0 4px 30px rgba(0, 243, 255, 0.4), 0 0 15px rgba(255, 0, 127, 0.3);
   z-index: 100;
   transition: all 0.3s ease;
+  animation: navbarGlow 6s linear infinite;
+}
+
+@keyframes navbarGlow {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
 }
 
 @media (min-width: 768px) {
@@ -477,3 +484,44 @@
   background: rgba(0, 243, 255, 0.08);
   margin-top: 1rem;
 }
+
+/* ===============================
+   Puzzle Animation (Lobby)
+=============================== */
+.home-container {
+  position: relative;
+  width: 100%;
+}
+.puzzle-container {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.puzzle-piece {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  opacity: 0.7;
+  filter: drop-shadow(0 0 15px currentColor);
+  animation: floatPuzzle 15s ease-in-out infinite alternate;
+}
+.puzzle-piece path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+}
+.piece-1 { top: 10%; left: 15%; color: #00f3ff; animation-delay: 0s; transform: scale(1.2); }
+.piece-2 { top: 40%; left: 75%; color: #ff007f; animation-delay: -2s; transform: scale(0.8); }
+.piece-3 { top: 70%; left: 20%; color: #39ff14; animation-delay: -4s; transform: scale(1.1); }
+.piece-4 { top: 25%; left: 85%; color: #9d00ff; animation-delay: -6s; transform: scale(0.9); }
+.piece-5 { top: 80%; left: 60%; color: #ffeb3b; animation-delay: -3s; transform: scale(1); }
+.piece-6 { top: 5%; left: 50%; color: #ff6600; animation-delay: -7s; transform: scale(1.3); }
+
+@keyframes floatPuzzle {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-40px) rotate(360deg) scale(1.1); opacity: 0.5; }
+}
+
