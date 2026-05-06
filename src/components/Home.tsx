@@ -37,7 +37,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, isAuthenticated, current
 
       {/* Columna de Interactividad (Solo visible si está logueado) */}
       {isAuthenticated && (
-        <aside className="glass-panel" style={{ width: '300px', padding: '1.5rem', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <aside className="glass-panel" style={{ width: '300px', padding: '1.5rem', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative', zIndex: 2 }}>
           <h3 style={{ color: 'var(--color-gold)', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '0.5rem' }}>
             Panel de Usuario
           </h3>
@@ -74,6 +74,15 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, isAuthenticated, current
           </div>
         </aside>
       )}
+
+      {/* Floating Puzzle Pieces (Background Animation) */}
+      <div className="puzzle-container">
+        {[...Array(6)].map((_, i) => (
+          <svg key={i} className={`puzzle-piece piece-${i + 1}`} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20,20 C20,10 30,10 30,20 L40,20 C40,5 60,5 60,20 L80,20 L80,40 C95,40 95,60 80,60 L80,80 L60,80 C60,95 40,95 40,80 L20,80 L20,60 C5,60 5,40 20,40 Z" />
+          </svg>
+        ))}
+      </div>
     </div>
   );
 };

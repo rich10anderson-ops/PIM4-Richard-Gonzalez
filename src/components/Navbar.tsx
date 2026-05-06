@@ -49,9 +49,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, isAuthenticated, onL
             <NavLink className="nav-item" to="/login" onClick={() => onNavigate('login')}>
               Login
             </NavLink>
-            <NavLink className="nav-item" to="/registro" onClick={() => onNavigate('register')}>
-              Registrarse
-            </NavLink>
           </>
         )}
       </div>
