@@ -76,7 +76,6 @@ export default async function handler(req: ServerlessRequest, res: ServerlessRes
     await sesClient.send(command);
     return res.status(200).json({ ok: true });
   } catch (error: any) {
-    console.error("Error sending email via SES:", error);
     return res.status(500).json({ ok: false, error: 'Error al enviar el email.' });
   }
 }
