@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
 interface EmailPayload {
@@ -27,13 +28,7 @@ export function validatePayload(payload: EmailPayload | undefined): string | nul
   return null;
 }
 
-const sesClient = new SESClient({
-  region: process.env.AWS_REGION || "us-east-1",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
-  },
-});
+// El cliente se instancia dentro del handler para leer las env vars en tiempo de ejecución
 
 export default async function handler(req: ServerlessRequest, res: ServerlessResponse) {
   // Configurar encabezados CORS
@@ -56,6 +51,30 @@ export default async function handler(req: ServerlessRequest, res: ServerlessRes
     return res.status(400).json({ ok: false, error: validationError });
   }
 
+  // Verificar configuración de AWS antes de enviar
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  const fromEmail = process.env.AWS_SES_FROM_EMAIL;
+  const region = process.env.AWS_REGION || "us-east-1";
+
+  if (!accessKeyId || !secretAccessKey || !fromEmail) {
+    console.error("AWS configuration missing. Keys present:", {
+      hasKey: Boolean(accessKeyId),
+      hasSecret: Boolean(secretAccessKey),
+      hasFrom: Boolean(fromEmail),
+    });
+    return res.status(500).json({ ok: false, error: 'Configuración de AWS incompleta. Revisa las variables de entorno en Vercel.' });
+  }
+
+  // Crear el cliente SES aquí para asegurar que lee los env vars correctos
+  const sesClient = new SESClient({
+    region,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+  });
+
   const { to, subject, message } = req.body as { to: string; subject: string; message: string };
 
   try {
@@ -69,13 +88,14 @@ export default async function handler(req: ServerlessRequest, res: ServerlessRes
         },
         Subject: { Data: subject },
       },
-      Source: process.env.AWS_SES_FROM_EMAIL || "[EMAIL_ADDRESS]",
+      Source: fromEmail,
     });
 
     await sesClient.send(command);
     return res.status(200).json({ ok: true });
   } catch (error: any) {
+    const errorMessage = error?.message || 'Error al enviar el email.';
     console.error("Error sending email via SES:", error);
-    return res.status(500).json({ ok: false, error: 'Error al enviar el email.' });
+    return res.status(500).json({ ok: false, error: `Error al enviar el email: ${errorMessage}` });
   }
 }
