@@ -68,16 +68,18 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
     setIsAdding(true);
     setError(null);
     try {
-      await addDoc(collection(db, 'tasks'), {
+      const docRef = await addDoc(collection(db, 'tasks'), {
         userId,
         title: newTitle.trim(),
         subtasks: []
       });
+      console.log("Tratamiento agregado con ID:", docRef.id);
       setNewTitle("");
     } catch (err) {
       console.error("Error adding task:", err);
       setError("Error al agregar el tratamiento.");
     } finally {
+      setIsAdding(true); // Se mantiene true hasta que onSnapshot refresque? No, mejor false.
       setIsAdding(false);
     }
   };
@@ -89,38 +91,56 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
     const newSubtask: Subtask = { id: Date.now(), body: '', done: false };
     const nextSubtasks = [...task.subtasks, newSubtask];
     
+    // Optimistic Update
+    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, subtasks: nextSubtasks } : t));
+
     try {
       const taskRef = doc(db, 'tasks', taskId);
       await updateDoc(taskRef, { subtasks: nextSubtasks });
+      console.log("Paso agregado a tarea:", taskId);
       setSuccessMessage('Paso agregado correctamente.');
-      setTimeout(() => setSuccessMessage(null), 3000);
+      setTimeout(() => setSuccessMessage(null), 2500);
     } catch (err) {
       console.error("Error adding subtask:", err);
       setError("Error al agregar el paso.");
+      // Rollback
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, subtasks: task.subtasks } : t));
     }
   };
 
   const handleUpdateSubtask = async (taskId: string, currentSubtasks: Subtask[], subtaskId: number, field: keyof Subtask, value: string | boolean) => {
+    const updatedSubtasks = currentSubtasks.map(st => 
+      st.id === subtaskId ? { ...st, [field]: value } : st
+    );
+
+    // Optimistic Update
+    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, subtasks: updatedSubtasks } : t));
+
     try {
       const taskRef = doc(db, 'tasks', taskId);
-      const updatedSubtasks = currentSubtasks.map(st => 
-        st.id === subtaskId ? { ...st, [field]: value } : st
-      );
       await updateDoc(taskRef, { subtasks: updatedSubtasks });
     } catch (err) {
       console.error("Error updating subtask:", err);
       setError("Error al actualizar el paso.");
+      // Rollback done by onSnapshot usually, but for consistency:
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, subtasks: currentSubtasks } : t));
     }
   };
 
   const handleRemoveSubtask = async (taskId: string, currentSubtasks: Subtask[], subtaskId: number) => {
+    const updatedSubtasks = currentSubtasks.filter(st => st.id !== subtaskId);
+    
+    // Optimistic Update
+    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, subtasks: updatedSubtasks } : t));
+
     try {
       const taskRef = doc(db, 'tasks', taskId);
-      const updatedSubtasks = currentSubtasks.filter(st => st.id !== subtaskId);
       await updateDoc(taskRef, { subtasks: updatedSubtasks });
+      console.log("Paso eliminado de tarea:", taskId);
     } catch (err) {
       console.error("Error removing subtask:", err);
       setError("Error al eliminar el paso.");
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, subtasks: currentSubtasks } : t));
     }
   };
 
@@ -128,13 +148,20 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
     setError(null);
     setSuccessMessage(null);
 
+    // Optimistic Update
+    const taskToDelete = tasks.find(t => t.id === taskId);
+    setTasks(prev => prev.filter(t => t.id !== taskId));
+
     try {
       await deleteDoc(doc(db, 'tasks', taskId));
+      console.log("Tratamiento eliminado:", taskId);
       setSuccessMessage("Tratamiento eliminado.");
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
       console.error("Error deleting task:", err);
       setError("Error al eliminar.");
+      // Rollback
+      if (taskToDelete) setTasks(prev => [...prev, taskToDelete]);
     }
   };
 

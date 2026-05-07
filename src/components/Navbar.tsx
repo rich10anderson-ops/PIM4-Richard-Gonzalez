@@ -64,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, onLogout }) => 
             ☰ Menú
           </button>
           <button type="button" className="nav-action-btn" onClick={() => setThemeMode(prev => prev === 'dark' ? 'light' : 'dark')}>
-            {themeMode === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
+            {themeMode === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
           </button>
           <div className="share-menu">
             <button type="button" className="nav-action-btn" onClick={() => setShareOpen(open => !open)}>

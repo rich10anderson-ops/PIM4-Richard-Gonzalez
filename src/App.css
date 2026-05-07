@@ -23,14 +23,25 @@
 }
 
 .theme-light .app-container {
-  /* No sobreescribimos el background para que se mantenga la imagen global */
+  /* Forzamos la persistencia de la imagen de fondo */
+  background: url('./assets/street-colorful-bg.png') no-repeat center center fixed !important;
+  background-size: cover !important;
 }
 
 .theme-light .app-container::before {
-  /* Filtro claro semi-transparente para que la imagen de fondo sea visible pero el texto legible */
-  background: rgba(248, 250, 252, 0.82); 
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  /* Filtro claro mucho más transparente para que la imagen resalte */
+  background: rgba(255, 255, 255, 0.75); 
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Colores de encabezados en modo claro */
+.theme-light h1, 
+.theme-light h2, 
+.theme-light h3, 
+.theme-light h4 {
+  color: #4338ca !important; /* Azul índigo vibrante */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .theme-light .glass-panel {
