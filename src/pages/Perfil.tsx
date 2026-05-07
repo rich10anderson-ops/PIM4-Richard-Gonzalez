@@ -9,13 +9,13 @@ export function Perfil({ currentUser, accountStatus }: PerfilProps) {
   return (
     <section className="dashboard-page">
       <MensajePostGuardado />
-      <h2>Perfil</h2>
-      <p>Consulta la información principal de tu cuenta y el estado actual del servicio.</p>
+      <h2>Servicios y Tratamientos</h2>
+      <p>Administra tus seguimientos, tratamientos y horarios desde un solo lugar.</p>
       <div className="dashboard-details">
         <span>Usuario</span>
         <strong>{currentUser || 'Invitado'}</strong>
-        <span>Estado</span>
-        <strong>{accountStatus || 'activa'}</strong>
+        <span>Estado del servicio</span>
+        <strong>{accountStatus || 'Activa'}</strong>
       </div>
     </section>
   );

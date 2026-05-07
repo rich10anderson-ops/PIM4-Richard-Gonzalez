@@ -132,7 +132,6 @@ function App() {
           <RequireAuth user={authUser}>
             <DashboardLayout 
               accountStatus={appState.accountStatus || 'activa'} 
-              onUpdateAccountStatus={(status) => setAppState(prev => ({ ...prev, accountStatus: status }))} 
             />
           </RequireAuth>
         }>

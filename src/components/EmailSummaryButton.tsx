@@ -47,13 +47,14 @@ const handleSendEmail = async () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
- <button
-            onClick={handleSendEmail}
-            disabled={sendingEmail}
-            >
-            {sendingEmail ? "Enviando..." : "📧 Enviar Resumen por Email"}
-          </button>
+    <div className="email-summary-wrapper">
+      <button
+        className="email-summary-button"
+        onClick={handleSendEmail}
+        disabled={sendingEmail}
+      >
+        {sendingEmail ? "Enviando..." : "📧 Enviar Resumen por Email"}
+      </button>
     </div>
   );
 };

@@ -1,6 +1,38 @@
 /* ===============================
    Layout Principal
 =============================== */
+:root {
+  --color-neon-fuchsia: #ff2fff;
+  --color-neon-cyan: #00f3ff;
+  --color-neon-orange: #ff7a00;
+  --color-neon-lime: #39ff14;
+  --color-neon-purple: #9d00ff;
+  --color-dark: #08080c;
+  --color-text: #f4f4f8;
+  --color-text-muted: #cbd5e1;
+  --glass-blur: blur(18px);
+  --glow-magenta: 0 0 15px rgba(255,0,255,0.55);
+  --glow-cyan: 0 0 18px rgba(0,243,255,0.35);
+  --glow-orange: 0 0 16px rgba(255,122,0,0.35);
+  --glow-fuchsia: 0 0 15px rgba(255,0,127,0.25);
+}
+
+.theme-light .app-container {
+  background: linear-gradient(135deg, rgba(20, 20, 30, 0.9), rgba(35, 22, 45, 0.9));
+}
+
+.theme-light .glass-panel {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.theme-light .nav-item,
+.theme-light .nav-action-btn,
+.theme-light .share-dropdown button,
+.theme-light .toolbar-list a {
+  color: #f8f8ff;
+}
+
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -50,15 +82,455 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem;
-  background: rgba(5, 5, 10, 0.7);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: rgba(5, 5, 10, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 2px solid transparent;
   border-image: linear-gradient(90deg, #ff007f, #00f3ff, #9d00ff, #39ff14, #ff007f) 1;
-  box-shadow: 0 4px 30px rgba(0, 243, 255, 0.4), 0 0 15px rgba(255, 0, 127, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 243, 255, 0.35), 0 0 15px rgba(255, 0, 127, 0.25);
   z-index: 100;
   transition: all 0.3s ease;
   animation: navbarGlow 6s linear infinite;
+}
+
+.nav-brand-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.2rem;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-action-btn {
+  padding: 0.55rem 0.85rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 0.85rem;
+}
+
+.nav-action-btn:hover {
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 0 12px rgba(0,255,255,0.18);
+}
+
+.share-menu {
+  position: relative;
+}
+
+.share-dropdown {
+  position: absolute;
+  right: 0;
+  top: 44px;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  width: 180px;
+  background: rgba(10, 10, 18, 0.96);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  z-index: 200;
+}
+
+.share-dropdown button {
+  width: 100%;
+  padding: 0.55rem 0.8rem;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.share-dropdown button:hover {
+  background: rgba(255,255,255,0.16);
+}
+
+.side-toolbar {
+  position: fixed;
+  left: -320px;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  padding: 2rem 1.2rem;
+  background: rgba(10, 10, 20, 0.95);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 8px 0 40px rgba(0,0,0,0.35);
+  transition: left 0.28s ease;
+  z-index: 210;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.side-toolbar.open {
+  left: 0;
+}
+
+.side-toolbar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 205;
+}
+
+.toolbar-header {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-neon-cyan);
+  letter-spacing: 0.05em;
+}
+
+.toolbar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.toolbar-list a {
+  display: block;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.toolbar-list a:hover {
+  background: rgba(0,255,255,0.12);
+  transform: translateX(2px);
+}
+
+.toolbar-contact-card {
+  padding: 1rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.toolbar-contact-card strong {
+  color: var(--color-neon-fuchsia);
+}
+
+.toolbar-contact-card a {
+  color: var(--color-neon-cyan);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.nav-item {
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.45rem 0.85rem;
+  border-radius: 18px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  color: var(--color-neon-cyan);
+  background: rgba(0, 243, 255, 0.13);
+  border-color: rgba(0, 243, 255, 0.35);
+  box-shadow: 0 0 16px rgba(0,243,255,0.2);
+}
+
+.btn-primary {
+  width: auto;
+  padding: 0.85rem 1.25rem;
+  background: transparent;
+  color: var(--color-neon-orange);
+  border: 2px solid var(--color-neon-orange);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  margin-top: 0;
+  transition: var(--transition-smooth);
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.2), inset 0 0 10px rgba(255, 102, 0, 0.1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(255,122,0,0.9), rgba(255,0,127,0.95));
+  color: var(--color-dark);
+  box-shadow: 0 0 18px rgba(255,122,0,0.35);
+}
+
+.email-summary-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.email-summary-button {
+  width: 100%;
+  max-width: 360px;
+  padding: 1rem 1.4rem;
+  border: none;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #ff00b2 0%, #00f3ff 40%, #9d00ff 100%);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  text-shadow: 0 0 14px rgba(255,255,255,0.4);
+  box-shadow: 0 0 24px rgba(157, 0, 255, 0.25);
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.email-summary-button:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.task-manager-panel {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.task-manager-title {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+.task-manager-topbar {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 0.85rem;
+  margin-bottom: 1.8rem;
+  align-items: stretch;
+}
+
+.task-manager-input {
+  min-width: 0;
+}
+
+.task-manager-add-btn {
+  min-width: 140px;
+}
+
+.task-manager-message {
+  padding: 0.95rem 1rem;
+  border-radius: 14px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.task-manager-error {
+  background: rgba(255, 77, 77, 0.12);
+  color: #ff8c8c;
+  border: 1px solid rgba(255, 77, 77, 0.18);
+}
+
+.task-manager-success {
+  background: rgba(57, 255, 20, 0.12);
+  color: #c8ffad;
+  border: 1px solid rgba(57, 255, 20, 0.25);
+}
+
+.task-manager-empty-state {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.task-manager-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.task-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.75rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.03), 0 12px 30px rgba(0,0,0,0.35);
+}
+
+.task-card::before {
+  content: '';
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle at 20% 20%, rgba(255,0,255,0.18), transparent 50%);
+  filter: blur(10px);
+}
+
+.task-card::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: -16px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle at 70% 70%, rgba(0,255,255,0.14), transparent 45%);
+  filter: blur(12px);
+}
+
+.task-delete-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  color: #ff7a8d;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.task-delete-btn:hover {
+  transform: scale(1.05);
+  background: rgba(255, 77, 77, 0.18);
+}
+
+.task-card-title {
+  margin-bottom: 1rem;
+  color: var(--color-neon-cyan);
+}
+
+.task-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.task-card-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.task-add-step-btn {
+  padding: 0.45rem 1rem;
+}
+
+.task-card-empty {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.task-card-steps {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.task-step-row {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.task-step-checkbox {
+  width: auto;
+  flex-shrink: 0;
+}
+
+.task-step-input {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  padding: 0.78rem 0.95rem;
+  font-size: 0.95rem;
+  background: rgba(255,255,255,0.08);
+}
+
+.task-step-remove-btn {
+  border: none;
+  background: transparent;
+  color: #ff4d4d;
+  cursor: pointer;
+  font-size: 1.4rem;
+  align-self: flex-start;
+}
+
+.email-summary-card {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+@media (max-width: 800px) {
+  .task-manager-topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .task-manager-add-btn {
+    width: 100%;
+  }
+
+  .task-card {
+    padding: 1.35rem;
+  }
+
+  .task-card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-step-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-step-remove-btn {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 520px) {
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 1rem;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .nav-item,
+  .nav-action-btn {
+    font-size: 0.82rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .task-manager-panel {
+    padding: 1.3rem;
+  }
 }
 
 @keyframes navbarGlow {

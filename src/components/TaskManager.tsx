@@ -20,6 +20,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Formulario para nueva tarea
   const [newTitle, setNewTitle] = useState("");
@@ -35,8 +36,12 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
     setLoading(true);
     const q = query(collection(db, 'tasks'), where('userId', '==', userId));
     
-    const unsubscribe = onSnapshot(q, 
+    const unsubscribe = onSnapshot(q, { includeMetadataChanges: true },
       (snapshot) => {
+        if (snapshot.metadata?.hasPendingWrites) {
+          return;
+        }
+
         const tasksData: Task[] = [];
         snapshot.forEach((doc) => {
           tasksData.push({ id: doc.id, ...doc.data() } as Task);
@@ -113,9 +118,16 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
   };
 
   const handleDeleteTask = async (taskId: string) => {
-    if (!confirm("¿Seguro que deseas eliminar este tratamiento?")) return;
+    const confirmed = confirm("¿Seguro que deseas eliminar este tratamiento?");
+    if (!confirmed) return;
+
+    setError(null);
+    setSuccessMessage(null);
+
     try {
       await deleteDoc(doc(db, 'tasks', taskId));
+      setSuccessMessage("Tratamiento eliminado exitosamente.");
+      setTimeout(() => setSuccessMessage(null), 4500);
     } catch (err) {
       console.error("Error deleting task:", err);
       setError("Error al eliminar el tratamiento.");
@@ -139,73 +151,70 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
   });
 
   return (
-    <div className="glass-panel" style={{ maxWidth: '700px', margin: '0 auto' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Mis Tratamientos</h2>
+    <div className="glass-panel task-manager-panel">
+      <h2 className="task-manager-title">Mis Tratamientos</h2>
       
-      {error && <div style={{ color: '#ff4d4d', background: 'rgba(255,77,77,0.1)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>{error}</div>}
+      {error && <div className="task-manager-message task-manager-error">{error}</div>}
+      {successMessage && <div className="task-manager-message task-manager-success">{successMessage}</div>}
 
-      <form onSubmit={handleAddTask} style={{ display: 'flex', gap: '10px', marginBottom: '2rem' }}>
+      <form onSubmit={handleAddTask} className="task-manager-topbar">
         <input 
           type="text" 
-          className="form-input"
+          className="form-input task-manager-input"
           value={newTitle} 
           onChange={e => setNewTitle(e.target.value)} 
           placeholder="Nuevo tratamiento (Ej: Limpieza Facial)" 
-          style={{ flex: 1, margin: 0 }}
           disabled={isAdding}
         />
-        <button type="submit" className="btn-primary" disabled={isAdding || !newTitle.trim()}>
+        <button type="submit" className="btn-primary task-manager-add-btn" disabled={isAdding || !newTitle.trim()}>
           {isAdding ? 'Agregando...' : 'Agregar'}
         </button>
       </form>
 
       {loading ? (
-        <p style={{ textAlign: 'center', color: 'var(--color-silver)' }}>Cargando tratamientos...</p>
+        <p className="task-manager-empty-state">Cargando tratamientos...</p>
       ) : tasks.length === 0 ? (
-        <p style={{ textAlign: 'center', color: 'var(--color-silver)', fontStyle: 'italic' }}>
-          No tienes tratamientos registrados.
-        </p>
+        <p className="task-manager-empty-state">No tienes tratamientos registrados.</p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <div className="task-manager-list">
           {tasks.map(task => (
-            <div key={task.id} style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '12px', position: 'relative' }}>
+            <div key={task.id} className="task-card">
               <button 
                 onClick={() => handleDeleteTask(task.id)}
-                style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', color: '#ff4d4d', cursor: 'pointer', fontSize: '1.2rem' }}
+                className="task-delete-btn"
                 title="Eliminar tratamiento"
               >
                 🗑️
               </button>
-              <h3 style={{ marginBottom: '1rem', color: 'var(--color-gold)' }}>{task.title}</h3>
+              <h3 className="task-card-title">{task.title}</h3>
               
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h4 style={{ fontSize: '0.9rem', color: 'var(--color-silver)' }}>Pasos ({task.subtasks.length})</h4>
-                <button type="button" className="btn-outline" onClick={() => handleAddSubtask(task.id, task.subtasks)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.8rem' }}>
+              <div className="task-card-header">
+                <h4 className="task-card-subtitle">Pasos ({task.subtasks.length})</h4>
+                <button type="button" className="btn-outline task-add-step-btn" onClick={() => handleAddSubtask(task.id, task.subtasks)}>
                   + Añadir Paso
                 </button>
               </div>
 
               {task.subtasks.length === 0 ? (
-                <p style={{ fontSize: '0.85rem', color: 'var(--color-silver)', fontStyle: 'italic' }}>Sin pasos asignados.</p>
+                <p className="task-card-empty">Sin pasos asignados.</p>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                <div className="task-card-steps">
                   {task.subtasks.map((st, index) => (
-                    <div key={st.id} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <div key={st.id} className="task-step-row">
                       <input 
                         type="checkbox" 
                         checked={st.done}
                         onChange={(e) => handleUpdateSubtask(task.id, task.subtasks, st.id, 'done', e.target.checked)}
-                        style={{ width: 'auto' }}
+                        className="task-step-checkbox"
                       />
                       <input 
                         type="text" 
-                        className="form-input" 
-                        style={{ margin: 0, flex: 1, padding: '0.5rem', fontSize: '0.9rem', background: 'rgba(0,0,0,0.2)' }}
+                        className="form-input task-step-input" 
                         value={st.body}
                         placeholder={`Descripción del paso ${index + 1}`}
                         onChange={(e) => handleUpdateSubtask(task.id, task.subtasks, st.id, 'body', e.target.value)}
                       />
-                      <button type="button" onClick={() => handleRemoveSubtask(task.id, task.subtasks, st.id)} style={{ background: 'transparent', border: 'none', color: '#ff4d4d', cursor: 'pointer', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                      <button type="button" className="task-step-remove-btn" onClick={() => handleRemoveSubtask(task.id, task.subtasks, st.id)}>
                         ×
                       </button>
                     </div>
@@ -215,7 +224,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
             </div>
           ))}
 
-          <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <div className="email-summary-card">
             <EmailSummaryButton tasks={emailTasks} />
           </div>
         </div>
