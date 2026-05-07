@@ -1156,7 +1156,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  padding-right: 340px; /* Espacio para el sidebar fijo */
+  padding-right: 370px; /* Ajustado para el nuevo ancho de sidebar (350px + gap) */
 }
 
 .user-panel-main {
@@ -1169,8 +1169,8 @@
 }
 
 .fixed-sidebar-right {
-  width: 320px;
-  background: rgba(10, 5, 20, 0.75);
+  width: 350px; /* Incrementado ligeramente para mejor lectura */
+  background: rgba(8, 5, 15, 0.85);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-left: 2px solid rgba(255, 0, 127, 0.4);
@@ -1181,7 +1181,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 4rem 2rem;
+  padding: 4rem 1.5rem; /* Reducido el padding lateral para ganar espacio */
   z-index: 100;
   box-shadow: -15px 0 50px rgba(0,0,0,0.7);
   animation: slideInRight 0.8s ease-out;
@@ -1194,23 +1194,33 @@
 
 .sidebar-logo-container {
   margin-bottom: 3rem;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, rgba(255, 0, 127, 0.1), rgba(0, 243, 255, 0.1));
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.05);
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(255, 0, 127, 0.2), rgba(0, 243, 255, 0.2));
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Prevenir desbordamiento del contenedor */
 }
 
 .logo-text-gradient {
-  font-size: 2.2rem;
+  font-size: 1.8rem; /* Reducido de 2.2rem para que encaje mejor */
   font-weight: 900;
   text-align: center;
   margin: 0;
   background: linear-gradient(135deg, #ff007f 0%, #00f3ff 50%, #9d00ff 100%);
-  padding: 10px;
-  border-radius: 8px;
-  color: #ffffff !important; /* Letras blancas como se pidió */
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #ffffff !important;
   text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
-  letter-spacing: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  width: 100%;
+  display: block;
+  white-space: nowrap; /* Mantener en una línea */
+  overflow: hidden;
+  text-overflow: clip; /* Opcional: si es muy largo se corta pero el tamaño ajustado debería bastar */
 }
 
 .sidebar-greeting {
