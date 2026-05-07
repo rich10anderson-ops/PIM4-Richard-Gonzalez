@@ -17,8 +17,6 @@ export const EmailSummaryButton: React.FC<EmailSummaryButtonProps> = ({
   tasks, 
 
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [statusMsg, setStatusMsg] = useState("");
 const [sendingEmail, setSendingEmail] = useState(false);
 const handleSendEmail = async () => {
     if (tasks.length === 0) return alert("No tienes tareas para enviar.");
@@ -56,7 +54,6 @@ const handleSendEmail = async () => {
             >
             {sendingEmail ? "Enviando..." : "📧 Enviar Resumen por Email"}
           </button>
-      {statusMsg && <span style={{ fontSize: '0.85rem', color: statusMsg.includes("Error") ? "#ff4d4d" : "#4caf50" }}>{statusMsg}</span>}
     </div>
   );
 };
