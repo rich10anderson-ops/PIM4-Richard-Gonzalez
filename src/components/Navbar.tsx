@@ -72,12 +72,12 @@ export const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, onLogout }) => 
             </button>
             {shareOpen && (
               <div className="share-dropdown">
-                <button type="button" onClick={() => sharePage('x')}>X</button>
-                <button type="button" onClick={() => sharePage('instagram')}>Instagram</button>
-                <button type="button" onClick={() => sharePage('facebook')}>Facebook</button>
-                <button type="button" onClick={() => sharePage('whatsapp')}>Whatsapp</button>
-                <button type="button" onClick={() => sharePage('discord')}>Discord</button>
-                <button type="button" onClick={() => sharePage('slack')}>Slack</button>
+                <button type="button" onClick={() => sharePage('x')} title="Compartir en X">🐦 X</button>
+                <button type="button" onClick={() => sharePage('instagram')} title="Compartir en Instagram">📷 Instagram</button>
+                <button type="button" onClick={() => sharePage('facebook')} title="Compartir en Facebook">📘 Facebook</button>
+                <button type="button" onClick={() => sharePage('whatsapp')} title="Compartir en Whatsapp">💬 Whatsapp</button>
+                <button type="button" onClick={() => sharePage('discord')} title="Compartir en Discord">🎮 Discord</button>
+                <button type="button" onClick={() => sharePage('slack')} title="Compartir en Slack">📎 Slack</button>
               </div>
             )}
           </div>

@@ -81,12 +81,19 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
     }
   };
 
-  const handleAddSubtask = async (taskId: string, currentSubtasks: Subtask[]) => {
+  const handleAddSubtask = async (taskId: string) => {
+    const task = tasks.find((taskItem) => taskItem.id === taskId);
+    if (!task) return;
+
+    const newSubtask: Subtask = { id: Date.now(), body: '', done: false };
+    const nextSubtasks = [...task.subtasks, newSubtask];
+    setTasks((prev) => prev.map((taskItem) => taskItem.id === taskId ? { ...taskItem, subtasks: nextSubtasks } : taskItem));
+
     try {
       const taskRef = doc(db, 'tasks', taskId);
-      await updateDoc(taskRef, {
-        subtasks: [...currentSubtasks, { id: Date.now(), body: '', done: false }]
-      });
+      await updateDoc(taskRef, { subtasks: nextSubtasks });
+      setSuccessMessage('Paso agregado. Puedes escribir el comentario relevante.');
+      setTimeout(() => setSuccessMessage(null), 3200);
     } catch (err) {
       console.error("Error adding subtask:", err);
       setError("Error al agregar el paso.");
@@ -126,6 +133,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
 
     try {
       await deleteDoc(doc(db, 'tasks', taskId));
+      setTasks((prev) => prev.filter((taskItem) => taskItem.id !== taskId));
       setSuccessMessage("Tratamiento eliminado exitosamente.");
       setTimeout(() => setSuccessMessage(null), 4500);
     } catch (err) {
@@ -183,6 +191,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
                 onClick={() => handleDeleteTask(task.id)}
                 className="task-delete-btn"
                 title="Eliminar tratamiento"
+                aria-label={`Eliminar tratamiento ${task.title}`}
               >
                 🗑️
               </button>
@@ -190,8 +199,8 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
               
               <div className="task-card-header">
                 <h4 className="task-card-subtitle">Pasos ({task.subtasks.length})</h4>
-                <button type="button" className="btn-outline task-add-step-btn" onClick={() => handleAddSubtask(task.id, task.subtasks)}>
-                  + Añadir Paso
+                <button type="button" className="btn-outline task-add-step-btn" onClick={() => handleAddSubtask(task.id)} title="Agregar un paso de tratamiento para añadir más detalles o comentarios">
+                  ✍️ + Añadir Paso
                 </button>
               </div>
 
