@@ -18,91 +18,106 @@
 }
 
 .theme-light {
-  background-color: #f4f7fb;
-  color: #111827;
+  background-color: #f8fafc;
+  color: #1e293b;
 }
 
 .theme-light .app-container {
-  background: linear-gradient(135deg, rgba(245, 248, 255, 0.98), rgba(223, 232, 255, 0.95));
+  background: radial-gradient(circle at top left, #f1f5f9, #e2e8f0);
 }
 
 .theme-light .app-container::before {
-  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(230, 241, 255, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(241, 245, 249, 0.8) 100%);
+  backdrop-filter: blur(5px);
 }
 
 .theme-light .glass-panel {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(15, 23, 42, 0.12);
-  color: #111827;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  color: #1e293b;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12), 0 0 15px rgba(59, 130, 246, 0.05);
 }
 
 .theme-light .navbar {
-  background: rgba(255,255,255,0.95);
-  color: #111827;
-  border-color: rgba(15, 23, 42, 0.08);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  background: rgba(255,255,255,0.9);
+  color: #1e293b;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899) 1;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
 
-.theme-light .nav-item,
-.theme-light .nav-action-btn,
-.theme-light .share-dropdown button,
-.theme-light .toolbar-list a {
-  color: #111827;
-}
-
-.theme-light .nav-item,
-.theme-light .nav-action-btn {
-  background: rgba(15, 23, 42, 0.06);
-  border-color: rgba(15, 23, 42, 0.12);
-}
-
-.theme-light .share-dropdown {
-  background: rgba(255,255,255,0.96);
-  border-color: rgba(15, 23, 42, 0.12);
-}
-
-.theme-light .share-dropdown button {
+.theme-light .nav-item {
+  color: #475569;
   background: rgba(15, 23, 42, 0.04);
-  color: #111827;
+  border-color: rgba(15, 23, 42, 0.08);
 }
 
-.theme-light .toolbar-list a {
-  background: rgba(255,255,255,0.7);
-  color: #111827;
+.theme-light .nav-item:hover,
+.theme-light .nav-item.active {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+.theme-light .fixed-sidebar-right {
+  background: rgba(255, 255, 255, 0.95);
+  border-left: 2px solid rgba(236, 72, 153, 0.4);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08);
+}
+
+.theme-light .logo-text-gradient {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
+  color: #ffffff !important;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+}
+
+.theme-light .user-panel-main {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.1);
+}
+
+.theme-light .panel-title {
+  color: #1d4ed8;
+  border-bottom-color: rgba(15, 23, 42, 0.08);
+}
+
+.theme-light .status-badge.active {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: #059669;
+  color: #047857;
+}
+
+.theme-light .btn-primary-neon {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+}
+
+.theme-light .btn-primary-neon:hover {
+  background: #1d4ed8;
+  box-shadow: 0 15px 35px rgba(37, 99, 235, 0.4);
+}
+
+.theme-light .btn-sidebar-action {
+  background: linear-gradient(90deg, #f97316, #db2777);
+  box-shadow: 0 8px 20px rgba(219, 39, 119, 0.3);
 }
 
 .theme-light .task-card {
-  background: rgba(255,255,255,0.88);
-  border-color: rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-.theme-light .task-card-title,
-.theme-light .task-card-subtitle,
-.theme-light .task-manager-title,
-.theme-light .task-manager-empty-state {
-  color: #0f172a;
-}
-
-.theme-light .task-step-input,
-.theme-light .form-input {
-  background: rgba(15, 23, 42, 0.05);
-  color: #0f172a;
-}
-
-.theme-light .task-delete-btn,
-.theme-light .btn-outline {
-  background: rgba(255,255,255,0.8);
-}
-
-.theme-light .task-delete-btn {
-  color: #be123c;
-}
-
-.theme-light .task-add-step-btn {
-  background: rgba(255,255,255,0.88);
-  border-color: rgba(59, 130, 246, 0.3);
+.theme-light .task-card-title {
   color: #1d4ed8;
+}
+
+.theme-light .puzzle-piece {
+  opacity: 0.35;
+  filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
 }
 
 .app-container {
