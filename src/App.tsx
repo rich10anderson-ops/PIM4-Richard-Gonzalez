@@ -31,7 +31,6 @@ const viewRoutes: Record<ViewState, string> = {
 function App() {
   const navigate = useNavigate();
   const [appState, setAppState] = useState<AppState & { accountStatus?: string }>({
-    currentView: 'home',
     isAuthenticated: false,
     currentUser: null,
     activeBooking: null,
@@ -46,18 +45,13 @@ function App() {
     ? { email: appState.currentUser, uid: appState.currentUser }
     : null;
 
-  const navigateTo = (view: ViewState) => {
-    setAppState(prev => ({ ...prev, currentView: view }));
-    navigate(viewRoutes[view]);
-  };
 
   const handleLogin = (username: string, status?: string, redirectTo?: string) => {
     setAppState(prev => ({ 
       ...prev, 
       isAuthenticated: true, 
       currentUser: username,
-      accountStatus: status || 'activa',
-      currentView: 'home' 
+      accountStatus: status || 'activa'
     }));
     navigate(redirectTo || viewRoutes.home, { replace: Boolean(redirectTo) });
   };
@@ -67,7 +61,7 @@ function App() {
       ...prev, 
       isAuthenticated: false, 
       currentUser: null, 
-      currentView: 'home',
+
       activeBooking: null, // Opcionalmente limpar reservas al salir
       activePayment: null
     }));
@@ -77,8 +71,7 @@ function App() {
   const handleBooking = (booking: SecureBookingTuple) => {
     setAppState(prev => ({
       ...prev,
-      activeBooking: booking,
-      currentView: 'payment' // Redirigir a pago inmediatamente o seguir en turnos
+      activeBooking: booking
     }));
     navigate(viewRoutes.payment);
   };
@@ -97,8 +90,6 @@ function App() {
       <Route
         element={
           <AppLayout
-            currentView={appState.currentView}
-            onNavigate={navigateTo}
             isAuthenticated={appState.isAuthenticated}
             onLogout={handleLogout}
           />
@@ -108,7 +99,6 @@ function App() {
           index
           element={
             <Home
-              onNavigate={navigateTo}
               isAuthenticated={appState.isAuthenticated}
               currentUser={appState.currentUser}
               accountStatus={appState.accountStatus}
@@ -117,12 +107,19 @@ function App() {
         />
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
-        <Route path="login" element={<Auth mode="login" onAuthSuccess={handleLogin} onNavigate={navigateTo} />} />
-        <Route path="registro" element={<Auth mode="register" onAuthSuccess={handleLogin} onNavigate={navigateTo} />} />
+        <Route path="login" element={<Auth mode="login" onAuthSuccess={handleLogin} />} />
+        <Route path="registro" element={<Auth mode="register" onAuthSuccess={handleLogin} />} />
         <Route path="turnos" element={<BookingForm onBook={handleBooking} />} />
         <Route path="pago" element={<Payment activeBooking={appState.activeBooking} onPaymentComplete={handlePayment} />} />
         <Route path="ayuda" element={<Help />} />
-        <Route path="tratamientos" element={<TaskManager userId={appState.currentUser} />} />
+        <Route 
+          path="tratamientos" 
+          element={
+            <RequireAuth user={authUser}>
+              <TaskManager userId={appState.currentUser} />
+            </RequireAuth>
+          } 
+        />
         <Route
           path="perfil/:userId"
           element={
@@ -132,10 +129,12 @@ function App() {
           }
         />
         <Route path="dashboard" element={
-          <DashboardLayout 
-            accountStatus={appState.accountStatus || 'activa'} 
-            onUpdateAccountStatus={(status) => setAppState(prev => ({ ...prev, accountStatus: status }))} 
-          />
+          <RequireAuth user={authUser}>
+            <DashboardLayout 
+              accountStatus={appState.accountStatus || 'activa'} 
+              onUpdateAccountStatus={(status) => setAppState(prev => ({ ...prev, accountStatus: status }))} 
+            />
+          </RequireAuth>
         }>
           <Route index element={<Navigate to="perfil" replace />} />
           <Route

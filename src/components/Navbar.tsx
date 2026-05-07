@@ -1,40 +1,38 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import type { ViewState } from '../types';
+
 
 interface NavbarProps {
-  currentView: ViewState;
-  onNavigate: (view: ViewState) => void;
   isAuthenticated: boolean;
   onLogout: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onNavigate, isAuthenticated, onLogout }) => {
+export const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, onLogout }) => {
   return (
     <nav className="navbar">
       <div className="nav-brand">L'ESTHÉTIQUE 2026</div>
       <div className="nav-links">
         {isAuthenticated ? (
           <>
-            <NavLink className="nav-item" to="/" onClick={() => onNavigate('home')}>
+            <NavLink className="nav-item" to="/">
               Inicio
             </NavLink>
             <NavLink className="nav-item" to="/about">
               Nosotros
             </NavLink>
-            <NavLink className="nav-item" to="/turnos" onClick={() => onNavigate('booking')}>
+            <NavLink className="nav-item" to="/turnos">
               Turnos
             </NavLink>
             <NavLink className="nav-item" to="/contact">
               Contacto
             </NavLink>
-            <NavLink className="nav-item" to="/ayuda" onClick={() => onNavigate('help')}>
+            <NavLink className="nav-item" to="/ayuda">
               Ayuda
             </NavLink>
-            <NavLink className="nav-item" to="/pago" onClick={() => onNavigate('payment')}>
+            <NavLink className="nav-item" to="/pago">
               Pagar Servicio
             </NavLink>
-            <NavLink className="nav-item" to="/dashboard/perfil" onClick={() => onNavigate('tasks')}>
+            <NavLink className="nav-item" to="/dashboard/perfil">
               Dashboard
             </NavLink>
             <NavLink className="nav-item" to="/perfil/demo-user">
@@ -46,7 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, isAuthenticated, onL
           </>
         ) : (
           <>
-            <NavLink className="nav-item" to="/login" onClick={() => onNavigate('login')}>
+            <NavLink className="nav-item" to="/login">
               Login
             </NavLink>
           </>

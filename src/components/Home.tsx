@@ -1,14 +1,16 @@
 import React from 'react';
-import type { ViewState } from '../types';
+
+
+import { useNavigate } from 'react-router-dom';
 
 interface HomeProps {
-  onNavigate: (view: ViewState) => void;
   isAuthenticated?: boolean;
   currentUser?: string | null;
   accountStatus?: string;
 }
 
-export const Home: React.FC<HomeProps> = ({ onNavigate, isAuthenticated, currentUser, accountStatus }) => {
+export const Home: React.FC<HomeProps> = ({ isAuthenticated, currentUser, accountStatus }) => {
+  const navigate = useNavigate();
   return (
     <div className="home-container" style={{ display: 'flex', gap: '2rem', maxWidth: isAuthenticated ? '1000px' : '800px', margin: '0 auto', alignItems: 'flex-start' }}>
       {/* Columna Principal */}
@@ -27,7 +29,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, isAuthenticated, current
           <button 
             type="button"
             className="btn-primary" 
-            onClick={() => onNavigate(isAuthenticated ? 'booking' : 'login')}
+            onClick={() => navigate(isAuthenticated ? '/turnos' : '/login')}
             style={{ padding: '1rem 3rem', fontSize: '1.2rem', maxWidth: '300px' }}
           >
             {isAuthenticated ? 'Reservar Nuevo Turno' : 'Login'}
@@ -66,7 +68,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, isAuthenticated, current
             <button 
               type="button"
               className="btn-outline" 
-              onClick={() => onNavigate('tasks')}
+              onClick={() => navigate('/tratamientos')}
               style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--color-gold)', color: 'var(--color-gold)' }}
             >
               Ver Mis Tratamientos

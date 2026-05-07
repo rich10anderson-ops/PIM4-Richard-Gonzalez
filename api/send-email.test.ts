@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import handler, { validatePayload } from './send-email';
-import * as sesClient from '@aws-sdk/client-ses';
+
 
 // Mock SES
 vi.mock('@aws-sdk/client-ses', () => {

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import type { ChangeEvent } from 'react';
-import { useLocation } from 'react-router-dom';
-import type { ViewState, FieldErrors } from '../types';
+import { useLocation, useNavigate } from 'react-router-dom';
+import type { FieldErrors } from '../types';
 import { auth } from '../firebase/config';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 type LoginFormState = {
   email: string;
@@ -15,21 +15,17 @@ const initialLoginForm: LoginFormState = { email: "", password: "" };
 interface AuthProps {
   mode: 'login' | 'register';
   onAuthSuccess: (username: string, status?: string, redirectTo?: string) => void;
-  onNavigate: (view: ViewState) => void;
 }
 
 interface LocationState {
   from?: { pathname: string };
 }
 
-async function mockSaveAuth(_data: unknown) {
-  await new Promise((r) => setTimeout(r, 800));
-  if (Math.random() < 0.3) throw new Error("Error de conexión. Intenta de nuevo.");
-  return { ok: true };
-}
 
-export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) => {
+
+export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state as LocationState | null;
   const [form, setForm] = useState<LoginFormState>(initialLoginForm);
   const [errors, setErrors] = useState<FieldErrors<LoginFormState>>({});
@@ -38,46 +34,6 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [accountStatus] = useState('activa');
 
-  // --- APLICACIÓN DE PATRONES DE ESTADO AVANZADOS (Arrays y Objetos) ---
-  
-  const [items, setItems] = useState<string[]>(['Tratamiento Facial', 'Masaje Relax']);
-
-  const addItem = (newItem: string) => {
-    setItems(prev => [...prev, newItem]);
-  };
-
-  const addItemAtStart = (newItem: string) => {
-    setItems(prev => [newItem, ...prev]);
-  };
-
-  const removeItemByIndex = (index: number) => {
-    setItems(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const sortItems = () => {
-    setItems(prev => [...prev].sort((a, b) => a.localeCompare(b)));
-  };
-
-  const [userProfile, setUserProfile] = useState({
-    name: 'Ana',
-    age: 28,
-    address: { city: 'Santiago', country: 'Chile' }
-  });
-
-  const updateAge = (newAge: number) => {
-    setUserProfile(prev => ({ ...prev, age: newAge }));
-  };
-
-  const updateCity = (newCity: string) => {
-    setUserProfile(prev => ({
-      ...prev,
-      address: {
-        ...prev.address,
-        city: newCity
-      }
-    }));
-  };
-  // ----------------------------------------------------------------------
 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -123,15 +79,36 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
       return;
     }
     
-    // Enviar
+    // Enviar a Firebase Auth
     try {
       setIsSubmitting(true);
-      await mockSaveAuth(form);
-      setSubmitSuccess(true);
+      let user;
       
-      setTimeout(() => onAuthSuccess(form.email, accountStatus, state?.from?.pathname), 1000);
-    } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "Error inesperado.");
+      if (mode === 'register') {
+        const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+        user = userCredential.user;
+      } else {
+        const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
+        user = userCredential.user;
+      }
+
+      setSubmitSuccess(true);
+      onAuthSuccess(user.email || form.email, accountStatus, state?.from?.pathname);
+    } catch (err: any) {
+      let errorMessage = "Error inesperado. Intenta nuevamente.";
+      
+      // Traducir errores de Firebase al español
+      if (err.code === 'auth/email-already-in-use') {
+        errorMessage = "El correo ya está en uso. Intenta iniciar sesión.";
+      } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+        errorMessage = "Correo o contraseña incorrectos.";
+      } else if (err.code === 'auth/weak-password') {
+        errorMessage = "La contraseña es muy débil. Usa al menos 6 caracteres.";
+      } else if (err.code === 'auth/network-request-failed') {
+        errorMessage = "Error de red. Verifica tu conexión.";
+      }
+      
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -198,48 +175,7 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
           {errors.password && <p id="password-error" style={{ color: '#ff4d4d', fontSize: '0.85rem', marginTop: '0.25rem', margin: 0 }}>{errors.password}</p>}
         </div>
 
-        {/* Sección interactiva para mostrar la aplicación de los patrones solo en modo Registro */}
-        {mode === 'register' && (
-          <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <h3 style={{ marginBottom: '1rem', color: 'var(--color-gold)', fontSize: '1.1rem' }}>Datos del Perfil (Estado Anidado)</h3>
-            
-            <div className="form-group">
-              <label>Ciudad (address.city)</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                value={userProfile.address.city} 
-                onChange={(e) => updateCity(e.target.value)} 
-              />
-            </div>
-            
-            <div className="form-group">
-              <label>Edad (age)</label>
-              <input 
-                type="number" 
-                className="form-input" 
-                value={userProfile.age} 
-                onChange={(e) => updateAge(Number(e.target.value))} 
-              />
-            </div>
 
-            <h3 style={{ marginTop: '2rem', marginBottom: '1rem', color: 'var(--color-gold)', fontSize: '1.1rem' }}>Intereses (Estado de Arreglo)</h3>
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-              <button type="button" className="btn-outline" onClick={() => addItem('Manicura')} style={{ flex: 1, padding: '0.5rem' }}>+ Al final</button>
-              <button type="button" className="btn-outline" onClick={() => addItemAtStart('Pedicura')} style={{ flex: 1, padding: '0.5rem' }}>+ Al inicio</button>
-              <button type="button" className="btn-outline" onClick={sortItems} style={{ flex: 1, padding: '0.5rem' }}>Ordenar (A-Z)</button>
-            </div>
-            
-            <ul style={{ textAlign: 'left', marginBottom: '1rem', listStyle: 'none', padding: 0 }}>
-              {items.map((item, idx) => (
-                <li key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '0.8rem', marginBottom: '0.5rem', borderRadius: '4px' }}>
-                  <span>{item}</span>
-                  <button type="button" onClick={() => removeItemByIndex(idx)} style={{ color: '#ff4d4d', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>Eliminar</button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
 
         <div style={{ minHeight: '50px', marginTop: '1.5rem', textAlign: 'center' }}>
           {submitError && (
@@ -267,7 +203,7 @@ export const Auth: React.FC<AuthProps> = ({ mode, onAuthSuccess, onNavigate }) =
           type="button"
           className="btn-outline" 
           style={{ padding: '0.5rem 1rem', borderRadius: '8px' }}
-          onClick={() => onNavigate(mode === 'login' ? 'register' : 'login')}
+          onClick={() => navigate(mode === 'login' ? '/registro' : '/login')}
         >
           {mode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Ingresa'}
         </button>

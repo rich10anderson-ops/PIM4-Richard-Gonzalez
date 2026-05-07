@@ -37,7 +37,6 @@ export type SecureBookingTuple = [string, ServiceId, string, boolean];
 export type ViewState = 'home' | 'login' | 'register' | 'booking' | 'payment' | 'help' | 'tasks';
 
 export interface AppState {
-  currentView: ViewState;
   isAuthenticated: boolean;
   currentUser: string | null;
   activeBooking: SecureBookingTuple | null;
