@@ -14,7 +14,7 @@ interface EmailSummaryButtonProps {
 
 export const EmailSummaryButton: React.FC<EmailSummaryButtonProps> = ({ 
   tasks, 
-  emailTo = "admin@esthetique2026.com", 
+  emailTo = "[EMAIL_ADDRESS]", 
   subject = "Resumen de Estado" 
 }) => {
   const [loading, setLoading] = useState(false);
