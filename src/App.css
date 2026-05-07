@@ -23,12 +23,14 @@
 }
 
 .theme-light .app-container {
-  background: radial-gradient(circle at top left, #f1f5f9, #e2e8f0);
+  /* No sobreescribimos el background para que se mantenga la imagen global */
 }
 
 .theme-light .app-container::before {
-  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(241, 245, 249, 0.8) 100%);
-  backdrop-filter: blur(5px);
+  /* Filtro claro semi-transparente para que la imagen de fondo sea visible pero el texto legible */
+  background: rgba(248, 250, 252, 0.82); 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .theme-light .glass-panel {
