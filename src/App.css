@@ -1136,40 +1136,209 @@
 /* ===============================
    Puzzle Animation (Lobby)
 =============================== */
-.home-container {
-  position: relative;
-  width: 100%;
-}
-.puzzle-container {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
-}
-.puzzle-piece {
-  position: absolute;
-  width: 120px;
-  height: 120px;
-  opacity: 0.7;
-  filter: drop-shadow(0 0 15px currentColor);
-  animation: floatPuzzle 15s ease-in-out infinite alternate;
-}
-.puzzle-piece path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3;
-}
-.piece-1 { top: 10%; left: 15%; color: #00f3ff; animation-delay: 0s; transform: scale(1.2); }
-.piece-2 { top: 40%; left: 75%; color: #ff007f; animation-delay: -2s; transform: scale(0.8); }
-.piece-3 { top: 70%; left: 20%; color: #39ff14; animation-delay: -4s; transform: scale(1.1); }
-.piece-4 { top: 25%; left: 85%; color: #9d00ff; animation-delay: -6s; transform: scale(0.9); }
-.piece-5 { top: 80%; left: 60%; color: #ffeb3b; animation-delay: -3s; transform: scale(1); }
-.piece-6 { top: 5%; left: 50%; color: #ff6600; animation-delay: -7s; transform: scale(1.3); }
 
-@keyframes floatPuzzle {
-  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.5; }
-  50% { opacity: 0.8; }
-  100% { transform: translateY(-40px) rotate(360deg) scale(1.1); opacity: 0.5; }
+/* ===============================
+   Nuevo Layout Dashboard Home
+=============================== */
+.home-dashboard-layout {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  align-items: flex-start;
+  padding: 2rem;
+  position: relative;
+  min-height: 80vh;
+}
+
+.main-content-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding-right: 340px; /* Espacio para el sidebar fijo */
+}
+
+.user-panel-main {
+  width: 100%;
+  max-width: 700px; /* Tamaño visual robusto */
+  padding: 3rem;
+  text-align: left;
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(0, 243, 255, 0.1);
+}
+
+.fixed-sidebar-right {
+  width: 320px;
+  background: rgba(10, 5, 20, 0.75);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-left: 2px solid rgba(255, 0, 127, 0.4);
+  height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 2rem;
+  z-index: 100;
+  box-shadow: -15px 0 50px rgba(0,0,0,0.7);
+  animation: slideInRight 0.8s ease-out;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.sidebar-logo-container {
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(255, 0, 127, 0.1), rgba(0, 243, 255, 0.1));
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.logo-text-gradient {
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-align: center;
+  margin: 0;
+  background: linear-gradient(135deg, #ff007f 0%, #00f3ff 50%, #9d00ff 100%);
+  padding: 10px;
+  border-radius: 8px;
+  color: #ffffff !important; /* Letras blancas como se pidió */
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+  letter-spacing: 2px;
+}
+
+.sidebar-greeting {
+  text-align: center;
+  color: var(--color-text);
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.btn-sidebar-action {
+  margin-top: 2.5rem;
+  width: 100%;
+  padding: 1.2rem;
+  background: linear-gradient(90deg, var(--color-neon-orange), #ff007f);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 20px rgba(255, 0, 127, 0.3);
+}
+
+.btn-sidebar-action:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(255, 0, 127, 0.5);
+}
+
+/* Elementos del Panel Principal */
+.panel-title {
+  color: var(--color-neon-cyan);
+  font-size: 2.2rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+  padding-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.section-label {
+  display: block;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 1rem;
+}
+
+.status-badge {
+  padding: 0.75rem 2rem;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-badge.active {
+  background: rgba(57, 255, 20, 0.1);
+  border: 1px solid var(--color-neon-lime);
+  color: var(--color-neon-lime);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+}
+
+.btn-primary-neon {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1.2rem;
+  background: transparent;
+  border: 2px solid var(--color-neon-cyan);
+  color: var(--color-neon-cyan);
+  border-radius: 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+}
+
+.btn-primary-neon:hover {
+  background: var(--color-neon-cyan);
+  color: #000;
+  box-shadow: 0 0 40px rgba(0, 243, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* TaskManager Fixes */
+.task-delete-btn {
+  background: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 0, 0, 0.4) !important;
+  font-size: 1.2rem;
+  z-index: 10;
+}
+
+.task-delete-btn:hover {
+  background: rgba(255, 0, 0, 0.6) !important;
+  transform: scale(1.1) rotate(5deg);
+}
+
+.task-add-step-btn {
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.task-add-step-btn:active {
+  transform: scale(0.95);
+}
+
+/* Responsividad Dashboard */
+@media (max-width: 1100px) {
+  .main-content-area {
+    padding-right: 0;
+  }
+  .fixed-sidebar-right {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-left: none;
+    border-bottom: 2px solid rgba(255, 0, 127, 0.4);
+    top: 0;
+    padding: 2rem;
+  }
+  .home-dashboard-layout {
+    flex-direction: column;
+  }
 }
 

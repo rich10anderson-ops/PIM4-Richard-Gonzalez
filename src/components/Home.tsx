@@ -12,72 +12,71 @@ interface HomeProps {
 export const Home: React.FC<HomeProps> = ({ isAuthenticated, currentUser, accountStatus }) => {
   const navigate = useNavigate();
   return (
-    <div className="home-container" style={{ display: 'flex', gap: '2rem', maxWidth: isAuthenticated ? '1000px' : '800px', margin: '0 auto', alignItems: 'flex-start' }}>
-      {/* Columna Principal */}
-      <div className="glass-panel" style={{ flex: 1, textAlign: 'center' }}>
-        <h1 style={{ fontSize: '3rem', color: 'var(--color-gold)', marginBottom: '1rem' }}>
-          L'ESTHÉTIQUE
-        </h1>
-        <p style={{ fontSize: '1.2rem', color: 'var(--color-text)' }}>
-          {isAuthenticated 
-            ? `¡Hola de nuevo, ${currentUser}! Estamos listos para tu próxima sesión de lujo.`
-            : 'Bienvenidos al Salón del Futuro. Experimenta el lujo, estilo y vanguardia con nuestros expertos.'
-          }
-        </p>
-        
-        <div style={{ marginTop: '3rem' }}>
-          <button 
-            type="button"
-            className="btn-primary" 
-            onClick={() => navigate(isAuthenticated ? '/turnos' : '/login')}
-            style={{ padding: '1rem 3rem', fontSize: '1.2rem', maxWidth: '300px' }}
-          >
-            {isAuthenticated ? 'Reservar Nuevo Turno' : 'Login'}
-          </button>
-        </div>
-      </div>
+    <div className="home-dashboard-layout">
+      {/* Main Content Area: Now holds the User Panel or Welcome Info */}
+      <main className="main-content-area">
+        {isAuthenticated ? (
+          <div className="glass-panel user-panel-main">
+            <h3 className="panel-title">Panel de Usuario</h3>
+            
+            <div className="panel-section">
+              <span className="section-label">Estado de la Cuenta</span>
+              <div className="status-badge active">
+                {accountStatus || 'Activa'}
+              </div>
+            </div>
 
-      {/* Columna de Interactividad (Solo visible si está logueado) */}
-      {isAuthenticated && (
-        <aside className="glass-panel" style={{ width: '300px', padding: '1.5rem', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative', zIndex: 2 }}>
-          <h3 style={{ color: 'var(--color-gold)', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '0.5rem' }}>
-            Panel de Usuario
-          </h3>
-          
-          <div>
-            <span style={{ fontSize: '0.9rem', color: '#ccc', textTransform: 'uppercase', letterSpacing: '1px' }}>Estado de la Cuenta</span>
-            <div style={{ 
-              marginTop: '0.5rem',
-              padding: '0.5rem 1rem', 
-              background: 'rgba(76, 175, 80, 0.1)', 
-              border: '1px solid #4CAF50',
-              color: '#4CAF50',
-              borderRadius: '8px',
-              fontWeight: 'bold',
-              textTransform: 'capitalize'
-            }}>
-              {accountStatus || 'Activa'}
+            <div className="panel-section">
+              <span className="section-label">Servicios Médicos</span>
+              <p className="section-description">
+                Gestiona y revisa tu historial de tratamientos y recomendaciones estéticas.
+              </p>
+              <button 
+                type="button"
+                className="btn-primary-neon" 
+                onClick={() => navigate('/tratamientos')}
+              >
+                Ver Mis Tratamientos
+              </button>
             </div>
           </div>
+        ) : (
+          <div className="glass-panel welcome-placeholder">
+            <p>Inicia sesión para acceder a tu panel personalizado.</p>
+            <button className="btn-primary-neon" onClick={() => navigate('/login')}>Login</button>
+          </div>
+        )}
+      </main>
 
-          <div>
-            <span style={{ fontSize: '0.9rem', color: '#ccc', textTransform: 'uppercase', letterSpacing: '1px' }}>Servicios Médicos</span>
-            <p style={{ fontSize: '0.85rem', color: 'var(--color-text)', marginTop: '0.5rem', marginBottom: '1rem' }}>
-              Gestiona y revisa tu historial de tratamientos y recomendaciones estéticas.
-            </p>
+      {/* Fixed Sidebar on the Right: Logo and Greeting */}
+      <aside className="fixed-sidebar-right">
+        <div className="sidebar-logo-container">
+          <h1 className="logo-text-gradient">
+            L'ESTHÉTIQUE
+          </h1>
+        </div>
+        
+        <div className="sidebar-greeting">
+          <p>
+            {isAuthenticated 
+              ? `¡Hola de nuevo, ${currentUser}! Estamos listos para tu próxima sesión de lujo.`
+              : 'Bienvenidos al Salón del Futuro.'
+            }
+          </p>
+          
+          {isAuthenticated && (
             <button 
               type="button"
-              className="btn-outline" 
-              onClick={() => navigate('/tratamientos')}
-              style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--color-gold)', color: 'var(--color-gold)' }}
+              className="btn-sidebar-action" 
+              onClick={() => navigate('/turnos')}
             >
-              Ver Mis Tratamientos
+              Reservar Nuevo Turno
             </button>
-          </div>
-        </aside>
-      )}
+          )}
+        </div>
+      </aside>
 
-      {/* Floating Puzzle Pieces (Background Animation) */}
+      {/* Background Puzzle Pieces */}
       <div className="puzzle-container">
         {[...Array(6)].map((_, i) => (
           <svg key={i} className={`puzzle-piece piece-${i + 1}`} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -86,5 +85,6 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated, currentUser, accoun
         ))}
       </div>
     </div>
+
   );
 };

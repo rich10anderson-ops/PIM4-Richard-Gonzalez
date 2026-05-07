@@ -25,6 +25,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
   // Formulario para nueva tarea
   const [newTitle, setNewTitle] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (!userId) {
@@ -87,13 +88,12 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
 
     const newSubtask: Subtask = { id: Date.now(), body: '', done: false };
     const nextSubtasks = [...task.subtasks, newSubtask];
-    setTasks((prev) => prev.map((taskItem) => taskItem.id === taskId ? { ...taskItem, subtasks: nextSubtasks } : taskItem));
-
+    
     try {
       const taskRef = doc(db, 'tasks', taskId);
       await updateDoc(taskRef, { subtasks: nextSubtasks });
-      setSuccessMessage('Paso agregado. Puedes escribir el comentario relevante.');
-      setTimeout(() => setSuccessMessage(null), 3200);
+      setSuccessMessage('Paso agregado correctamente.');
+      setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
       console.error("Error adding subtask:", err);
       setError("Error al agregar el paso.");
@@ -125,20 +125,16 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
   };
 
   const handleDeleteTask = async (taskId: string) => {
-    const confirmed = confirm("¿Seguro que deseas eliminar este tratamiento?");
-    if (!confirmed) return;
-
     setError(null);
     setSuccessMessage(null);
 
     try {
       await deleteDoc(doc(db, 'tasks', taskId));
-      setTasks((prev) => prev.filter((taskItem) => taskItem.id !== taskId));
-      setSuccessMessage("Tratamiento eliminado exitosamente.");
-      setTimeout(() => setSuccessMessage(null), 4500);
+      setSuccessMessage("Tratamiento eliminado.");
+      setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
       console.error("Error deleting task:", err);
-      setError("Error al eliminar el tratamiento.");
+      setError("Error al eliminar.");
     }
   };
 
@@ -150,8 +146,11 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
     );
   }
 
-  // Prepara los datos para el email summary
-  const emailTasks = tasks.map(t => {
+  const filteredTasks = tasks.filter(t => 
+    t.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const emailTasks = filteredTasks.map(t => {
     const total = t.subtasks.length;
     const done = t.subtasks.filter(st => st.done).length;
     const status = total === 0 ? "Sin pasos" : (done === total ? "Completado" : `En progreso (${done}/${total})`);
@@ -164,6 +163,17 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
       
       {error && <div className="task-manager-message task-manager-error">{error}</div>}
       {successMessage && <div className="task-manager-message task-manager-success">{successMessage}</div>}
+
+      <div className="task-manager-search-container" style={{ marginBottom: '1.5rem' }}>
+        <input 
+          type="text" 
+          className="form-input search-input"
+          placeholder="🔍 Buscar tratamiento..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(0, 243, 255, 0.2)' }}
+        />
+      </div>
 
       <form onSubmit={handleAddTask} className="task-manager-topbar">
         <input 
@@ -181,17 +191,18 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
 
       {loading ? (
         <p className="task-manager-empty-state">Cargando tratamientos...</p>
-      ) : tasks.length === 0 ? (
-        <p className="task-manager-empty-state">No tienes tratamientos registrados.</p>
+      ) : filteredTasks.length === 0 ? (
+        <p className="task-manager-empty-state">
+          {searchQuery ? "No se encontraron coincidencias." : "No tienes tratamientos registrados."}
+        </p>
       ) : (
         <div className="task-manager-list">
-          {tasks.map(task => (
+          {filteredTasks.map(task => (
             <div key={task.id} className="task-card">
               <button 
                 onClick={() => handleDeleteTask(task.id)}
                 className="task-delete-btn"
                 title="Eliminar tratamiento"
-                aria-label={`Eliminar tratamiento ${task.title}`}
               >
                 🗑️
               </button>
@@ -199,7 +210,11 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ userId }) => {
               
               <div className="task-card-header">
                 <h4 className="task-card-subtitle">Pasos ({task.subtasks.length})</h4>
-                <button type="button" className="btn-outline task-add-step-btn" onClick={() => handleAddSubtask(task.id)} title="Agregar un paso de tratamiento para añadir más detalles o comentarios">
+                <button 
+                  type="button" 
+                  className="btn-outline task-add-step-btn" 
+                  onClick={() => handleAddSubtask(task.id)}
+                >
                   ✍️ + Añadir Paso
                 </button>
               </div>
