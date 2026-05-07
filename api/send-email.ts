@@ -19,7 +19,7 @@ export default async function handler(req: any, res: any) {
         const { tasks, userEmail } = req.body;
 
         const params = {
-            Source: process.env.SES_SENDER_EMAIL!,
+            Source: process.env.SES_FROM_EMAIL || process.env.SES_SENDER_EMAIL!,
             Destination: {
                 ToAddresses: [userEmail],
             },
