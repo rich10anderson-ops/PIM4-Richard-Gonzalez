@@ -49,7 +49,7 @@ export default async function handler(req: ServerlessRequest, res: ServerlessRes
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ ok: false, error: 'Método no permitido.' });
+    return res.status(405).json({ ok: true, error: 'Método no permitido.' });
   }
 
   const validationError = validatePayload(req.body);
@@ -76,6 +76,11 @@ export default async function handler(req: ServerlessRequest, res: ServerlessRes
     await sesClient.send(command);
     return res.status(200).json({ ok: true });
   } catch (error: any) {
-    return res.status(500).json({ ok: false, error: 'Error al enviar el email.' });
+    console.error("Error de AWS SES:", error); // Esto se verá en los logs de tu servidor
+    return res.status(500).json({
+      ok: false,
+      error: error.message || 'Error al enviar el email.'
+    });
   }
 }
+
