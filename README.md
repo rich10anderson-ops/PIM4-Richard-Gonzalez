@@ -16,6 +16,13 @@ Hoy en día, permite a los usuarios registrarse de forma segura, gestionar sus p
   - **Firestore (NoSQL):** Permite almacenar los tratamientos (CRUD completo) con persistencia en la nube. Se configuró el modelo de datos donde cada tratamiento pertenece a un `userId` único asociado al token de sesión, garantizando el aislamiento de la información.
 - **Serverless Functions (Vercel API):** Se desarrolló una API *serverless* en `/api/send-email.ts` integrando el SDK de AWS SES. Esto permite desacoplar la lógica crítica del cliente, asegurar las credenciales de Amazon, y manejar exitosamente las pre-peticiones de seguridad (CORS).
 
+## ✨ Mejoras de UI/UX recientes
+- Se reforzó la experiencia en **modo claro** para que el `navbar`, los paneles de tratamiento y los botones se vean claramente distintos al modo oscuro.
+- En `Mis Tratamientos` se añadieron efectos de **figuras flotantes tipo rompecabezas** alrededor del panel y dentro de las tarjetas para una sensación premium visual de navegación.
+- Los botones de acción ahora tienen **feedback visual** en el hover y etiquetas de ayuda en el icono de eliminar y en el botón de “Añadir Paso”.
+- El botón de compartir muestra iconos de red sociales visibles y descripciones, lo que facilita su reconocimiento en una experiencia de interfaz profesional.
+- La gestión de pasos en cada tratamiento se actualiza con respuesta inmediata: al pulsar “+ Añadir Paso”, aparece un campo de edición para escribir comentarios o instrucciones relevantes.
+
 ## ⚙️ Instrucciones de instalación
 1. Clona el repositorio:
    ```bash
