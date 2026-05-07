@@ -89,6 +89,32 @@ Esta funcionalidad está disponible **solo para usuarios autenticados** y accesi
    - Ejecuta `SendEmailCommand` y despacha el correo.
 4. **Respuesta:** Vercel responde `{ ok: true }` → el frontend muestra el mensaje de éxito. Si AWS o la validación falla, responde `{ ok: false, error: "..." }` y el frontend lo muestra en rojo.
 
+---
+
+### 🏜️ AWS SES Sandbox (Versión Gratuita) - Limitaciones Administrativas
+AWS Simple Email Service (SES) ofrece una **versión gratuita** conocida como "Sandbox", diseñada para pruebas y desarrollo. Esta configuración impone restricciones administrativas que afectan el envío de emails, pero **no constituyen un error de producción**. A continuación, se detalla cómo funciona y sus consecuencias:
+
+#### ¿Qué es el Sandbox de AWS SES?
+- **Propósito:** El Sandbox permite a los desarrolladores probar la integración de SES sin incurrir en costos, pero limita el envío para prevenir abusos.
+- **Activación:** Por defecto, todas las cuentas nuevas de AWS SES comienzan en modo Sandbox. Para salir de él, debes solicitar verificación de identidad y dominio a través de la consola de AWS, lo que puede tomar tiempo (generalmente 24-48 horas) y requiere documentación adicional.
+
+#### Limitaciones en el Sandbox
+- **Destinatarios verificados únicamente:** Solo puedes enviar emails a direcciones de correo electrónico que hayas verificado previamente en la consola de AWS SES. Intentar enviar a cualquier otro destinatario resultará en un error de "Email address not verified".
+- **Límite de envío diario:** Está restringido a un máximo de 200 emails por día, con un límite de 1 email por segundo.
+- **Sin acceso a características avanzadas:** Funciones como envío masivo, plantillas personalizadas o métricas detalladas no están disponibles hasta salir del Sandbox.
+
+#### Consecuencias en la Aplicación
+- **Errores de envío esperados:** Si intentas enviar un email a una dirección no verificada, AWS SES rechazará la solicitud con un código de error específico (ej. `MessageRejected`). Esto se traduce en el frontend como un mensaje de error ("❌ No se pudo enviar el email."), pero **no es un fallo del código de producción**.
+- **Impacto en pruebas:** Durante el desarrollo, solo los emails enviados a direcciones verificadas llegarán. Para pruebas completas, verifica direcciones de prueba en AWS SES.
+- **Transición a producción:** Una vez aprobado el dominio y la identidad, la cuenta sale del Sandbox automáticamente, permitiendo envío ilimitado a cualquier destinatario. Este proceso es administrativo y no requiere cambios en el código.
+
+#### Recomendaciones
+- **Para desarrollo:** Verifica direcciones de correo de prueba en la consola de AWS SES para evitar errores.
+- **Para producción:** Solicita la salida del Sandbox lo antes posible para una experiencia completa. Consulta la [documentación oficial de AWS SES](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html) para los pasos detallados.
+- **Nota importante:** Estos límites son intencionales y temporales; no indican problemas en la implementación de la aplicación. Una vez en producción, el servicio funcionará sin restricciones.
+
+Esta configuración asegura que el servicio de email sea seguro y controlado durante la fase de pruebas, evitando costos innecesarios y abusos.
+
 ## 🤖 Integración de la IA en el proceso de trabajo
 La adopción de la Inteligencia Artificial operó como un verdadero *Pair Programmer* avanzado a lo largo de este proyecto, destacando en las siguientes fases:
 
