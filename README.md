@@ -66,7 +66,7 @@ La aplicación se encuentra desplegada y es accesible públicamente mediante Ver
 ### 👤 Guía paso a paso para el usuario (cómo probarlo)
 Esta funcionalidad está disponible **solo para usuarios autenticados** y accesible desde la sección de gestión de tareas.
 
-1. **Regístrate o inicia sesión** en [https://pim-4-rho.vercel.app](https://pim-4-rho.vercel.app) (con Google o con email + contraseña).
+1. **Regístrate o inicia sesión** en [https://pim-4-rho.vercel.app](https://pim-4-rho.vercel.app) (con Google o con email + contraseña). [Lo activa solo una cuenta de Google]
 2. Desde la pantalla de inicio, haz clic en el botón **"Ver Mis Tratamientos"** o navega a la ruta `/tratamientos`.
 3. Si aún no tienes tareas, **crea al menos una** usando el campo de texto en la parte superior (ej. "Revisión mensual") y presiona **"Agregar"**.
 4. Dentro de cada tarea, puedes agregar pasos individuales con el botón **"+ Añadir Paso"**, escribir la descripción de cada uno y marcarlos como completados con el checkbox ☑️.
